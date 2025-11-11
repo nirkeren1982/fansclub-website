@@ -1,0 +1,220 @@
+import { useParams } from "react-router-dom";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import CreatorCard from "@/components/CreatorCard";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ExternalLink, Instagram, Twitter } from "lucide-react";
+import { useCreator } from '../hooks/useCreator';
+import { useCreators } from '../hooks/useCreators';
+
+const CreatorProfile = () => {
+  const { username } = useParams();
+  const { creator, loading, error } = useCreator(username || '');
+  const { creators: relatedCreators } = useCreators({ limit: 6, sort: 'popular' });
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1">
+          <section className="w-full py-12 md:py-16 bg-secondary/20">
+            <div className="container px-4 md:px-6">
+              <div className="flex flex-col items-center text-center space-y-6 animate-pulse">
+                <div className="w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full bg-gray-200"></div>
+                <div className="space-y-2">
+                  <div className="h-10 w-64 bg-gray-200 rounded"></div>
+                  <div className="h-6 w-48 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Error or not found state
+  if (error || !creator) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1">
+          <section className="w-full py-12 md:py-16">
+            <div className="container px-4 md:px-6">
+              <div className="flex flex-col items-center text-center space-y-6">
+                <h1 className="text-4xl md:text-6xl font-black">404</h1>
+                <h2 className="text-2xl md:text-3xl font-bold">Creator Not Found</h2>
+                <p className="text-muted-foreground max-w-md">
+                  Sorry, we couldn't find the creator you're looking for.
+                </p>
+                <Button onClick={() => window.location.href = '/'}>
+                  Back to Home
+                </Button>
+              </div>
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="w-full py-12 md:py-16 bg-secondary/20">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center text-center space-y-6">
+              <div className="relative">
+                <img
+                  src={creator.profile_image_url || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"}
+                  alt={creator.display_name || creator.username}
+                  className="w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full object-cover border-4 border-background shadow-lg"
+                />
+                {creator.is_verified && (
+                  <Badge className="absolute bottom-4 right-4 bg-primary text-primary-foreground">
+                    VERIFIED
+                  </Badge>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <h1 className="text-3xl md:text-5xl font-black">
+                  {creator.display_name || creator.username}
+                </h1>
+                <p className="text-xl text-muted-foreground">@{creator.username}</p>
+              </div>
+
+              <div className="flex flex-wrap gap-2 justify-center">
+                {creator.categories && creator.categories.length > 0 ? (
+                  creator.categories.map((category, index) => (
+                    <Badge key={index} variant="secondary">
+                      {category}
+                    </Badge>
+                  ))
+                ) : creator.category ? (
+                  <Badge variant="secondary">{creator.category}</Badge>
+                ) : null}
+              </div>
+
+              {creator.promoted && (
+                <Badge className="bg-primary text-primary-foreground text-sm">
+                  PROMOTED
+                </Badge>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Bio Section */}
+        <section className="w-full py-12 bg-background">
+          <div className="container px-4 md:px-6 max-w-3xl mx-auto">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold mb-4">About</h2>
+                <p className="text-muted-foreground leading-relaxed">
+                  {creator.bio || "No bio available"}
+                </p>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-primary">
+                    {creator.likes_count ? creator.likes_count.toLocaleString() : '0'}
+                  </p>
+                  <p className="text-sm text-muted-foreground">Likes</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-primary">
+                    {creator.photos_count || creator.photo_count || '0'}
+                  </p>
+                  <p className="text-sm text-muted-foreground">Photos</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-primary">
+                    {creator.videos_count || creator.video_count || '0'}
+                  </p>
+                  <p className="text-sm text-muted-foreground">Videos</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-primary">
+                    {creator.subscription_price ? `$${creator.subscription_price}` : 'FREE'}
+                  </p>
+                  <p className="text-sm text-muted-foreground">Per Month</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="w-full py-12 bg-secondary/20">
+          <div className="container px-4 md:px-6 max-w-3xl mx-auto">
+            <div className="flex flex-col items-center space-y-6">
+              {creator.onlyfans_url && (
+                <Button 
+                  size="lg" 
+                  className="w-full max-w-md gap-2 text-lg font-bold"
+                  onClick={() => window.open(creator.onlyfans_url, '_blank')}
+                >
+                  Visit OnlyFans Profile
+                  <ExternalLink className="h-5 w-5" />
+                </Button>
+              )}
+
+              <div className="flex gap-4">
+                {creator.instagram_url && (
+                  <Button 
+                    size="icon" 
+                    variant="outline"
+                    onClick={() => window.open(creator.instagram_url, '_blank')}
+                  >
+                    <Instagram className="h-5 w-5" />
+                  </Button>
+                )}
+                {creator.twitter_url && (
+                  <Button 
+                    size="icon" 
+                    variant="outline"
+                    onClick={() => window.open(creator.twitter_url, '_blank')}
+                  >
+                    <Twitter className="h-5 w-5" />
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Related Creators */}
+        <section className="w-full py-12 bg-background">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-2xl md:text-3xl font-black mb-8">Similar Creators</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {relatedCreators?.map((relatedCreator) => (
+                <CreatorCard
+                  key={relatedCreator.id || relatedCreator.username}
+                  name={relatedCreator.display_name || relatedCreator.username}
+                  username={relatedCreator.username}
+                  price={relatedCreator.subscription_price ? `$${relatedCreator.subscription_price}` : "FREE"}
+                  description={relatedCreator.bio?.substring(0, 100) || "No bio available"}
+                  image={relatedCreator.profile_image_url}
+                  badge={relatedCreator.is_verified ? "VERIFIED" : undefined}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default CreatorProfile;

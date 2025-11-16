@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { fetchCreators, type Creator, type FetchCreatorsParams } from '../lib/api'
+import { fetchCreators, type Creator, type FetchCreatorsParams } from '@/lib/api'
 
 interface UseCreatorsReturn {
   creators: Creator[]
@@ -9,12 +9,6 @@ interface UseCreatorsReturn {
   refetch: () => Promise<void>
 }
 
-/**
- * React hook for fetching creators list with filters
- * 
- * @example
- * const { creators, total, loading, error } = useCreators({ limit: 24, sort: 'popular' })
- */
 export function useCreators(params: FetchCreatorsParams = {}): UseCreatorsReturn {
   const [creators, setCreators] = useState<Creator[]>([])
   const [total, setTotal] = useState(0)
@@ -39,8 +33,7 @@ export function useCreators(params: FetchCreatorsParams = {}): UseCreatorsReturn
 
   useEffect(() => {
     loadCreators()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(params)]) // Re-fetch when params change
+  }, [JSON.stringify(params)])
 
   return {
     creators,
@@ -50,4 +43,3 @@ export function useCreators(params: FetchCreatorsParams = {}): UseCreatorsReturn
     refetch: loadCreators,
   }
 }
-

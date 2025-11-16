@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react'
-import { fetchCategories, type Category } from '../lib/api'
+import { fetchCategories } from '@/lib/api'
+
+interface Category {
+  category_name: string
+  creator_count: number
+}
 
 interface UseCategoriesReturn {
   categories: Category[]
@@ -8,12 +13,6 @@ interface UseCategoriesReturn {
   refetch: () => Promise<void>
 }
 
-/**
- * React hook for fetching categories list
- * 
- * @example
- * const { categories, loading, error } = useCategories()
- */
 export function useCategories(): UseCategoriesReturn {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
@@ -23,8 +22,16 @@ export function useCategories(): UseCategoriesReturn {
     try {
       setLoading(true)
       setError(null)
-      const data = await fetchCategories()
-      setCategories(data)
+      const categoryNames = await fetchCategories()
+      
+      // Transform array of strings into objects with creator_count
+      // For now, we'll set count to 0 since fetchCategories only returns names
+      const categoriesWithCount = categoryNames.map(name => ({
+        category_name: name,
+        creator_count: 0
+      }))
+      
+      setCategories(categoriesWithCount)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load categories')
       setCategories([])
@@ -35,7 +42,7 @@ export function useCategories(): UseCategoriesReturn {
 
   useEffect(() => {
     loadCategories()
-  }, []) // Only fetch once on mount
+  }, [])
 
   return {
     categories,
@@ -44,4 +51,3 @@ export function useCategories(): UseCategoriesReturn {
     refetch: loadCategories,
   }
 }
-

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { fetchCreatorByUsername, type Creator } from '../lib/api'
+import { fetchCreatorByUsername, type Creator } from '@/lib/api'
 
 interface UseCreatorReturn {
   creator: Creator | null
@@ -47,8 +47,7 @@ export function useCreator(username: string): UseCreatorReturn {
 
   useEffect(() => {
     loadCreator()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username]) // Re-fetch when username changes
+  }, [username])
 
   return {
     creator,
@@ -57,4 +56,3 @@ export function useCreator(username: string): UseCreatorReturn {
     refetch: loadCreator,
   }
 }
-

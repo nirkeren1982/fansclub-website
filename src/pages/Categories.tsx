@@ -6,7 +6,7 @@ import { Flame, Gift, Clock, Target, MapPin } from "lucide-react";
 import { useCategories } from '../hooks/useCategories';
 
 const Categories = () => {
-  const { categories, loading } = useCategories();
+  const { categories, loading, error } = useCategories();
 
   const countries = [
     { emoji: "🇦🇷", name: "Argentina", slug: "argentina" },
@@ -116,7 +116,12 @@ const Categories = () => {
                 <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                   <span className="text-primary">⭐</span> All Categories (Themes, Genres & More)
                 </h3>
-                {loading ? (
+                {error ? (
+                  <div className="text-center py-8">
+                    <p className="text-destructive font-bold text-lg">Error Loading Categories</p>
+                    <p className="text-muted-foreground mt-2">{error}</p>
+                  </div>
+                ) : loading ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                     {[...Array(20)].map((_, i) => (
                       <div key={i} className="h-12 bg-gray-200 rounded animate-pulse"></div>
@@ -128,15 +133,17 @@ const Categories = () => {
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                     {categories.map((category) => (
                       <Link
-                        key={category.id}
-                        to={`/explore?category=${encodeURIComponent(category.slug || category.name)}`}
+                        key={category.category_name}
+                        to={`/explore?category=${encodeURIComponent(category.category_name)}`}
                       >
                         <Button
                           variant="outline"
-                          className="w-full justify-start h-auto py-3 px-4 text-left hover:border-primary hover:text-primary transition-colors"
+                          className="w-full justify-between h-auto py-3 px-4 text-left hover:border-primary hover:text-primary transition-colors"
                         >
-                          {category.icon && <span className="text-xl mr-2">{category.icon}</span>}
-                          <span className="text-sm font-medium truncate">{category.name}</span>
+                          <span className="text-sm font-medium truncate">{category.category_name}</span>
+                          <span className="text-xs text-muted-foreground ml-2 whitespace-nowrap">
+                            {category.creator_count.toLocaleString()}
+                          </span>
                         </Button>
                       </Link>
                     ))}

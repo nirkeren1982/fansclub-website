@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CreatorCard from "@/components/CreatorCard";
@@ -7,11 +8,27 @@ import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Instagram, Twitter } from "lucide-react";
 import { useCreator } from '../hooks/useCreator';
 import { useCreators } from '../hooks/useCreators';
+import { MetaTags } from "@/components/SEO/MetaTags";
+import { PersonSchema, BreadcrumbSchema } from "@/components/SEO/StructuredData";
+import { generateTitle, truncateDescription } from "@/utils/seo";
+import type { Creator } from '@/lib/api';
 
 const CreatorProfile = () => {
   const { username } = useParams();
   const { creator, loading, error } = useCreator(username || '');
-  const { creators: relatedCreators } = useCreators({ limit: 6, sort: 'popular' });
+  const { creators: allCreators } = useCreators({ limit: 50, sort: 'popular' });
+
+  // Get random creators (excluding current creator)
+  const randomCreators = useMemo(() => {
+    if (!allCreators || !username) return [];
+    
+    // Filter out the current creator
+    const filtered = allCreators.filter(c => c.username !== username);
+    
+    // Shuffle and get 4 random creators
+    const shuffled = [...filtered].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 4);
+  }, [allCreators, username]);
 
   // Loading state
   if (loading) {
@@ -20,7 +37,7 @@ const CreatorProfile = () => {
         <Header />
         <main className="flex-1">
           <section className="w-full py-12 md:py-16 bg-secondary/20">
-            <div className="container px-4 md:px-6">
+            <div className="container px-8 md:px-12 lg:px-16">
               <div className="flex flex-col items-center text-center space-y-6 animate-pulse">
                 <div className="w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full bg-gray-200"></div>
                 <div className="space-y-2">
@@ -43,7 +60,7 @@ const CreatorProfile = () => {
         <Header />
         <main className="flex-1">
           <section className="w-full py-12 md:py-16">
-            <div className="container px-4 md:px-6">
+            <div className="container px-8 md:px-12 lg:px-16">
               <div className="flex flex-col items-center text-center space-y-6">
                 <h1 className="text-4xl md:text-6xl font-black">404</h1>
                 <h2 className="text-2xl md:text-3xl font-bold">Creator Not Found</h2>
@@ -62,18 +79,40 @@ const CreatorProfile = () => {
     );
   }
 
+  const pageTitle = `${creator.display_name || creator.username} (@${creator.username}) - OnlyFans Profile`;
+  const bioExcerpt = creator.bio ? truncateDescription(creator.bio, 155) : `OnlyFans profile for ${creator.display_name || creator.username}`;
+  const pageDescription = `${bioExcerpt} - ${creator.likes_count || 0} likes, ${creator.photos_count || 0} photos, ${creator.videos_count || 0} videos. Subscription: $${creator.subscription_price || 'Free'}. View full profile on FansClubOnly.`;
+
   return (
     <div className="min-h-screen flex flex-col">
+      <MetaTags
+        title={generateTitle(pageTitle)}
+        description={truncateDescription(pageDescription)}
+        canonical={`/creator/${creator.username}`}
+        ogImage={creator.profile_image_url || undefined}
+        keywords={`${creator.username}, ${creator.display_name || creator.username}, OnlyFans, ${creator.categories?.join(', ') || ''}`}
+        type="profile"
+      />
+      <PersonSchema creator={creator} />
+      <BreadcrumbSchema
+        items={[
+          { name: 'Home', url: '/' },
+          { name: 'Creators', url: '/explore' },
+          { name: creator.display_name || creator.username, url: `/creator/${creator.username}` },
+        ]}
+      />
+      
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
         <section className="w-full py-12 md:py-16 bg-secondary/20">
-          <div className="container px-4 md:px-6">
+          <div className="container px-8 md:px-12 lg:px-16">
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative">
                 <img
                   src={creator.profile_image_url || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"}
-                  alt={creator.display_name || creator.username}
+                  alt={`${creator.display_name || creator.username} - OnlyFans Creator Profile Picture`}
+                  loading="eager"
                   className="w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full object-cover border-4 border-background shadow-lg"
                 />
                 {creator.is_verified && (
@@ -113,7 +152,7 @@ const CreatorProfile = () => {
 
         {/* Bio Section */}
         <section className="w-full py-12 bg-background">
-          <div className="container px-4 md:px-6 max-w-3xl mx-auto">
+          <div className="container px-8 md:px-12 lg:px-16 max-w-3xl mx-auto">
             <div className="space-y-6">
               <div>
                 <h2 className="text-2xl font-bold mb-4">About</h2>
@@ -155,16 +194,19 @@ const CreatorProfile = () => {
 
         {/* CTA Section */}
         <section className="w-full py-12 bg-secondary/20">
-          <div className="container px-4 md:px-6 max-w-3xl mx-auto">
+          <div className="container px-8 md:px-12 lg:px-16 max-w-3xl mx-auto">
             <div className="flex flex-col items-center space-y-6">
               {creator.onlyfans_url && (
                 <Button 
                   size="lg" 
                   className="w-full max-w-md gap-2 text-lg font-bold"
-                  onClick={() => window.open(creator.onlyfans_url, '_blank')}
+                  onClick={() => window.open(creator.onlyfans_url, '_blank', 'noopener,noreferrer')}
+                  asChild
                 >
-                  Visit OnlyFans Profile
-                  <ExternalLink className="h-5 w-5" />
+                  <a href={creator.onlyfans_url} target="_blank" rel="noopener noreferrer">
+                    Visit OnlyFans Profile
+                    <ExternalLink className="h-5 w-5" />
+                  </a>
                 </Button>
               )}
 
@@ -173,18 +215,22 @@ const CreatorProfile = () => {
                   <Button 
                     size="icon" 
                     variant="outline"
-                    onClick={() => window.open(creator.instagram_url, '_blank')}
+                    asChild
                   >
-                    <Instagram className="h-5 w-5" />
+                    <a href={creator.instagram_url} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                      <Instagram className="h-5 w-5" />
+                    </a>
                   </Button>
                 )}
                 {creator.twitter_url && (
                   <Button 
                     size="icon" 
                     variant="outline"
-                    onClick={() => window.open(creator.twitter_url, '_blank')}
+                    asChild
                   >
-                    <Twitter className="h-5 w-5" />
+                    <a href={creator.twitter_url} target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                      <Twitter className="h-5 w-5" />
+                    </a>
                   </Button>
                 )}
               </div>
@@ -194,21 +240,20 @@ const CreatorProfile = () => {
 
         {/* Related Creators */}
         <section className="w-full py-12 bg-background">
-          <div className="container px-4 md:px-6">
+          <div className="container px-8 md:px-12 lg:px-16">
             <h2 className="text-2xl md:text-3xl font-black mb-8">Similar Creators</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {relatedCreators?.map((relatedCreator) => (
-                <CreatorCard
-                  key={relatedCreator.id || relatedCreator.username}
-                  name={relatedCreator.display_name || relatedCreator.username}
-                  username={relatedCreator.username}
-                  price={relatedCreator.subscription_price ? `$${relatedCreator.subscription_price}` : "FREE"}
-                  description={relatedCreator.bio?.substring(0, 100) || "No bio available"}
-                  image={relatedCreator.profile_image_url}
-                  badge={relatedCreator.is_verified ? "VERIFIED" : undefined}
-                />
-              ))}
-            </div>
+            {randomCreators.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                {randomCreators.map((randomCreator) => (
+                  <CreatorCard
+                    key={randomCreator.id || randomCreator.username}
+                    creator={randomCreator}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-muted-foreground py-8">Loading similar creators...</p>
+            )}
           </div>
         </section>
       </main>

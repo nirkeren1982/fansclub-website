@@ -12,24 +12,27 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-      <div className="container flex h-16 items-center px-8 md:px-12 lg:px-16">
+      <div className="container flex h-16 md:h-20 items-center px-8 md:px-24 lg:px-24">
         {/* Logo - Clickable and returns to home */}
-        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-            <Search className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="text-xl font-bold text-primary">FansClubOnly</span>
+        <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
+          <img 
+            src="/logo.svg" 
+            alt="FansClubOnly" 
+            className="h-16 md:h-20 w-auto translate-y-[3px] md:translate-y-0"
+            width="200"
+            height="60"
+          />
         </Link>
 
         {/* Desktop Navigation - Centered */}
-        <nav className="hidden md:flex items-center gap-6 mx-auto">
-          <Button variant="ghost" className="gap-2" asChild>
+        <nav className="hidden md:flex items-center gap-6 mx-auto text-base">
+          <Button variant="ghost" className="gap-2 text-base" asChild>
             <Link to="/explore">
               <Compass className="h-4 w-4" />
               <span>Explore</span>
             </Link>
           </Button>
-          <Button variant="ghost" className="gap-2" asChild>
+          <Button variant="ghost" className="gap-2 text-base" asChild>
             <Link to="/blog">
               <BookOpen className="h-4 w-4" />
               <span>Blog</span>
@@ -44,7 +47,7 @@ const Header = () => {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="md:hidden ml-auto"
+          className="md:hidden ml-auto bg-accent text-accent-foreground"
           onClick={toggleMobileMenu}
           aria-label="Toggle menu"
         >
@@ -58,11 +61,11 @@ const Header = () => {
 
       {/* Mobile Navigation Menu - Right aligned below hamburger */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t bg-card absolute right-0 w-64 shadow-lg">
-          <nav className="flex flex-col py-4 px-4 space-y-2">
+        <div className="md:hidden border-t bg-card absolute right-0 w-64 shadow-lg animate-in slide-in-from-top fade-in duration-300 ease-out pt-4">
+          <nav className="flex flex-col py-4 px-4 space-y-2 text-base">
             <Button 
               variant="ghost" 
-              className="gap-2 justify-end w-full" 
+              className="gap-2 justify-end w-full text-base" 
               asChild
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -73,7 +76,7 @@ const Header = () => {
             </Button>
             <Button 
               variant="ghost" 
-              className="gap-2 justify-end w-full" 
+              className="gap-2 justify-end w-full text-base" 
               asChild
               onClick={() => setIsMobileMenuOpen(false)}
             >

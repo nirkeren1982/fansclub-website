@@ -113,12 +113,12 @@ export function TrendingCreators() {
   if (loading) {
     return (
       <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-8 md:px-12 lg:px-16">
+        <div className="container mx-auto px-8 md:px-24 lg:px-24">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Trending Creators</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h3 className="text-h3-mobile md:text-h3-desktop font-bold mb-4 text-black">Trending Creators</h3>
+            <h4 className="text-h4-mobile md:text-h4-desktop max-w-2xl mx-auto text-muted-foreground">
               Loading the hottest creators right now...
-            </p>
+            </h4>
           </div>
           <div className={gridClass}>
             {Array.from({ length: 12 }).map((_, i) => (
@@ -137,7 +137,7 @@ export function TrendingCreators() {
   if (error) {
     return (
       <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-8 md:px-12 lg:px-16">
+        <div className="container mx-auto px-8 md:px-24 lg:px-24">
           <Alert variant="destructive" className="max-w-2xl mx-auto">
             <AlertDescription>
               Failed to load trending creators. Please try again later.
@@ -151,12 +151,12 @@ export function TrendingCreators() {
   if (!dailyCreators || dailyCreators.length === 0) {
     return (
       <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-8 md:px-12 lg:px-16">
+        <div className="container mx-auto px-8 md:px-24 lg:px-24">
           <div className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Trending Creators</h2>
-            <p className="text-gray-600 mb-8">
+            <h3 className="text-h3-mobile md:text-h3-desktop font-bold mb-4 text-black">Trending Creators</h3>
+            <h4 className="text-h4-mobile md:text-h4-desktop mb-8 text-muted-foreground">
               No featured creators available at the moment.
-            </p>
+            </h4>
             <a href="/explore" className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 hover:scale-105">
               Explore All Creators
               <ArrowRight className="w-5 h-5" />
@@ -169,16 +169,16 @@ export function TrendingCreators() {
 
   return (
     <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-8 md:px-12 lg:px-16">
+      <div className="container mx-auto px-8 md:px-24 lg:px-24">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-pink-100 text-pink-700 px-4 py-2 rounded-full mb-4">
             <Sparkles className="w-4 h-4" />
             <span className="text-sm font-semibold">TRENDING NOW</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Trending Creators</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <h3 className="text-h3-mobile md:text-h3-desktop font-bold mb-4 text-black">Trending Creators</h3>
+          <h4 className="text-h4-mobile md:text-h4-desktop max-w-2xl mx-auto text-muted-foreground">
             Discover the most popular creators on OnlyFans right now • Refreshed daily
-          </p>
+          </h4>
         </div>
         <div className={gridClass}>
           {dailyCreators.map((creator) => (

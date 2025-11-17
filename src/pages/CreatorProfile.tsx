@@ -123,9 +123,9 @@ const CreatorProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <h1 className="text-3xl md:text-5xl font-black">
+                <h3 className="text-h3-mobile md:text-h3-desktop font-bold text-black">
                   {creator.display_name || creator.username}
-                </h1>
+                </h3>
                 <p className="text-xl text-muted-foreground">@{creator.username}</p>
               </div>
 
@@ -156,7 +156,7 @@ const CreatorProfile = () => {
             <div className="space-y-6">
               <div>
                 <h2 className="text-2xl font-bold mb-4">About</h2>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-bio-mobile md:text-bio-desktop text-[hsl(0_0%_45%)] leading-relaxed">
                   {creator.bio || "No bio available"}
                 </p>
               </div>

@@ -152,7 +152,7 @@ const Explore = () => {
       <Header />
       <main className="flex-1">
         <section className="w-full py-16 md:py-24 bg-background">
-          <div className="container px-8 md:px-12 lg:px-16">
+          <div className="container px-8 md:px-24 lg:px-24">
             <div className="flex flex-col space-y-8">
               <div className="text-center md:text-left">
                 <h1 className="text-3xl md:text-5xl font-black">Explore OnlyFans Models</h1>

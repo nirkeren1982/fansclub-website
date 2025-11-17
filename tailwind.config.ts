@@ -58,6 +58,23 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      fontSize: {
+        // Custom typography scale
+        'h1-desktop': ['70px', { lineHeight: '0.7', fontWeight: '900' }],
+        'h1-mobile': ['42px', { lineHeight: '0.7', fontWeight: '900' }],
+        'h2-desktop': ['50px', { lineHeight: '0.7', fontWeight: '900' }],
+        'h2-mobile': ['32px', { lineHeight: '0.7', fontWeight: '900' }],
+        'h3-desktop': ['38px', { lineHeight: '0.7', fontWeight: '700' }],
+        'h3-mobile': ['28px', { lineHeight: '0.7', fontWeight: '700' }],
+        'h4-desktop': ['22px', { lineHeight: '1.5', fontWeight: '400' }],
+        'h4-mobile': ['18px', { lineHeight: '1.5', fontWeight: '400' }],
+        'h5-desktop': ['18px', { lineHeight: '0.7', fontWeight: '500' }],
+        'h5-mobile': ['16px', { lineHeight: '0.7', fontWeight: '500' }],
+        'body-desktop': ['16px', { lineHeight: '1.6' }],
+        'body-mobile': ['14px', { lineHeight: '1.6' }],
+        'bio-desktop': ['12px', { lineHeight: '1.6' }],
+        'bio-mobile': ['11px', { lineHeight: '1.6' }],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

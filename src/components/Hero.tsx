@@ -38,13 +38,15 @@ const Hero = () => {
         <div className="flex flex-col items-center text-center space-y-8">
           {/* Heading */}
           <div className="space-y-4 max-w-4xl">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black">
-              <span className="text-primary">Creator Search Engine</span>
-              {" "}Find Creators Fast
+            <h1 className="text-h1-mobile md:text-h1-desktop font-black text-[hsl(195_100%_42%)]">
+              Creator Search Engine
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground">
+            <h2 className="text-h2-mobile md:text-h2-desktop font-black text-black">
+              Find Creators Fast
+            </h2>
+            <h4 className="text-h4-mobile md:text-h4-desktop text-[hsl(0_0%_45%)]">
               Search by name, username, category, location or interests
-            </p>
+            </h4>
           </div>
 
           {/* Search Bar */}
@@ -53,6 +55,7 @@ const Hero = () => {
             <Input
               type="text"
                 placeholder="Find your next favorite creator"
+                className="text-h5-mobile md:text-h5-desktop text-[hsl(0_0%_45%)] placeholder:text-[hsl(0_0%_45%)]"
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);

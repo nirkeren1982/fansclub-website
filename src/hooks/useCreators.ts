@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { fetchCreators, type Creator, type FetchCreatorsParams } from '@/lib/api'
 
 interface UseCreatorsReturn {
@@ -10,36 +10,25 @@ interface UseCreatorsReturn {
 }
 
 export function useCreators(params: FetchCreatorsParams = {}): UseCreatorsReturn {
-  const [creators, setCreators] = useState<Creator[]>([])
-  const [total, setTotal] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  const loadCreators = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const data = await fetchCreators(params)
-      setCreators(data.items)
-      setTotal(data.total)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load creators')
-      setCreators([])
-      setTotal(0)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    loadCreators()
-  }, [JSON.stringify(params)])
+  const {
+    data,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['creators', params],
+    queryFn: () => fetchCreators(params),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
+  })
 
   return {
-    creators,
-    total,
-    loading,
-    error,
-    refetch: loadCreators,
+    creators: data?.items || [],
+    total: data?.total || 0,
+    loading: isLoading,
+    error: error ? (error instanceof Error ? error.message : 'Failed to load creators') : null,
+    refetch: async () => {
+      await refetch()
+    },
   }
 }

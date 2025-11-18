@@ -99,15 +99,6 @@ export function TrendingCreators() {
     return getDailyRandomCreators(creators || [], 12);
   }, [creators]);
 
-  console.log("TrendingCreators Debug:", { 
-    totalCreators: creators?.length,
-    dailySelected: dailyCreators.length,
-    loading, 
-    error,
-    creators: creators,
-    dailyCreators: dailyCreators
-  });
-
   const gridClass = "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8";
 
   if (loading) {

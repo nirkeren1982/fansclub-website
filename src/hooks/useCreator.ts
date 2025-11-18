@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { fetchCreatorByUsername, type Creator } from '@/lib/api'
 
 interface UseCreatorReturn {
@@ -10,49 +10,33 @@ interface UseCreatorReturn {
 
 /**
  * React hook for fetching a single creator by username
+ * Uses React Query for caching and automatic refetching
  * 
  * @example
  * const { creator, loading, error } = useCreator('skylarmaexo')
  */
 export function useCreator(username: string): UseCreatorReturn {
-  const [creator, setCreator] = useState<Creator | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  const loadCreator = async () => {
-    if (!username) {
-      setError('Username is required')
-      setLoading(false)
-      return
-    }
-
-    try {
-      setLoading(true)
-      setError(null)
-      const data = await fetchCreatorByUsername(username)
-      
-      if (!data) {
-        setError('Creator not found')
-        setCreator(null)
-      } else {
-        setCreator(data)
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load creator')
-      setCreator(null)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    loadCreator()
-  }, [username])
+  const {
+    data: creator,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['creator', username],
+    queryFn: () => fetchCreatorByUsername(username),
+    enabled: !!username, // Only fetch if username is provided
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
+  })
 
   return {
-    creator,
-    loading,
-    error,
-    refetch: loadCreator,
+    creator: creator || null,
+    loading: isLoading,
+    error: error 
+      ? (error instanceof Error ? error.message : 'Failed to load creator')
+      : (!creator && username ? 'Creator not found' : null),
+    refetch: async () => {
+      await refetch()
+    },
   }
 }

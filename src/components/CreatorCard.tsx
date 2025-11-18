@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +10,7 @@ interface CreatorCardProps {
   creator: Creator;
 }
 
-const CreatorCard = ({ creator }: CreatorCardProps) => {
+const CreatorCard = memo(({ creator }: CreatorCardProps) => {
   // Format likes count with commas
   const formatLikes = (likes: number | null) => {
     if (likes === null || likes === undefined) return "0";
@@ -87,6 +88,8 @@ const CreatorCard = ({ creator }: CreatorCardProps) => {
       </Card>
     </Link>
   );
-};
+});
+
+CreatorCard.displayName = "CreatorCard";
 
 export default CreatorCard;

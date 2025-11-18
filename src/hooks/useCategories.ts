@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { fetchCategories } from '@/lib/api'
 
 interface Category {
@@ -14,40 +14,31 @@ interface UseCategoriesReturn {
 }
 
 export function useCategories(): UseCategoriesReturn {
-  const [categories, setCategories] = useState<Category[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const {
+    data: categoryNames,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => fetchCategories(),
+    staleTime: 10 * 60 * 1000, // 10 minutes (categories change less frequently)
+    retry: 1,
+  })
 
-  const loadCategories = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const categoryNames = await fetchCategories()
-      
-      // Transform array of strings into objects with creator_count
-      // For now, we'll set count to 0 since fetchCategories only returns names
-      const categoriesWithCount = categoryNames.map(name => ({
-        category_name: name,
-        creator_count: 0
-      }))
-      
-      setCategories(categoriesWithCount)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load categories')
-      setCategories([])
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    loadCategories()
-  }, [])
+  // Transform array of strings into objects with creator_count
+  // For now, we'll set count to 0 since fetchCategories only returns names
+  const categories: Category[] = (categoryNames || []).map(name => ({
+    category_name: name,
+    creator_count: 0
+  }))
 
   return {
     categories,
-    loading,
-    error,
-    refetch: loadCategories,
+    loading: isLoading,
+    error: error ? (error instanceof Error ? error.message : 'Failed to load categories') : null,
+    refetch: async () => {
+      await refetch()
+    },
   }
 }

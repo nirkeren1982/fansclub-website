@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
@@ -9,7 +9,7 @@ const Hero = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     // Clear previous error
     setError("");
 
@@ -24,13 +24,13 @@ const Hero = () => {
 
     // Navigate to search results page with query parameter
     navigate(`/search?q=${encodeURIComponent(trimmedSearch)}`);
-  };
+  }, [searchTerm, navigate]);
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSearch();
     }
-  };
+  }, [handleSearch]);
 
   return (
     <section className="relative w-full bg-gradient-to-b from-background to-secondary py-16 md:py-24">
@@ -54,15 +54,14 @@ const Hero = () => {
             <div className="relative">
             <Input
               type="text"
-                placeholder="Find your next favorite creator"
-                className="text-h5-mobile md:text-h5-desktop text-[hsl(0_0%_45%)] placeholder:text-[hsl(0_0%_45%)]"
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setError(""); // Clear error on typing
-                }}
-                onKeyPress={handleKeyPress}
-              className="h-14 pl-5 pr-14 text-base rounded-full border-2 shadow-lg"
+              placeholder="Find your next favorite creator"
+              className="h-14 pl-5 pr-14 text-base rounded-full border-2 shadow-lg text-h5-mobile md:text-h5-desktop text-[hsl(0_0%_45%)] placeholder:text-[hsl(0_0%_45%)]"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setError(""); // Clear error on typing
+              }}
+              onKeyPress={handleKeyPress}
             />
             <Button 
               size="icon"

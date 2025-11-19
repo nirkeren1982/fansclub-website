@@ -38,33 +38,10 @@ export interface CreatorsResponse {
 export async function fetchCreators(params: FetchCreatorsParams = {}): Promise<CreatorsResponse> {
   try {
     // Query directly from creators table (not v_creators view)
-    // Select columns and map photo_count/video_count to photos_count/videos_count
+    // Map: photo_count → photos_count, video_count → videos_count
     let query = supabase
       .from('creators')
-      .select(`
-        id,
-        username,
-        display_name,
-        profile_image_url,
-        bio,
-        subscription_price,
-        onlyfans_url,
-        instagram_url,
-        twitter_url,
-        tiktok_url,
-        linktree_url,
-        country,
-        likes_count,
-        photo_count,
-        video_count,
-        is_verified,
-        promoted,
-        status,
-        date_added,
-        last_updated,
-        view_count,
-        categories
-      `, { count: 'exact' })
+      .select('*', { count: 'exact' })
 
     // Apply filters - Multi-word search (each word searched separately)
     if (params.search) {
@@ -87,7 +64,6 @@ export async function fetchCreators(params: FetchCreatorsParams = {}): Promise<C
     }
 
     if (params.category) {
-      // Filter by category - categories is an array column in creators table
       query = query.contains('categories', [params.category])
     }
 
@@ -117,9 +93,6 @@ export async function fetchCreators(params: FetchCreatorsParams = {}): Promise<C
       ...creator,
       photos_count: creator.photo_count ?? null,
       videos_count: creator.video_count ?? null,
-      // Remove the old column names
-      photo_count: undefined,
-      video_count: undefined,
     }))
 
     return {
@@ -137,30 +110,7 @@ export async function fetchCreatorByUsername(username: string, incrementView: bo
     // Query directly from creators table (not v_creators view)
     const { data, error } = await supabase
       .from('creators')
-      .select(`
-        id,
-        username,
-        display_name,
-        profile_image_url,
-        bio,
-        subscription_price,
-        onlyfans_url,
-        instagram_url,
-        twitter_url,
-        tiktok_url,
-        linktree_url,
-        country,
-        likes_count,
-        photo_count,
-        video_count,
-        is_verified,
-        promoted,
-        status,
-        date_added,
-        last_updated,
-        view_count,
-        categories
-      `)
+      .select('*')
       .eq('username', username)
       .single()
 
@@ -179,9 +129,6 @@ export async function fetchCreatorByUsername(username: string, incrementView: bo
       ...data,
       photos_count: data.photo_count ?? null,
       videos_count: data.video_count ?? null,
-      // Remove the old column names
-      photo_count: undefined,
-      video_count: undefined,
     } as Creator
   } catch (error) {
     console.error('Failed to fetch creator:', error)

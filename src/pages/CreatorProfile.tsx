@@ -115,11 +115,13 @@ const CreatorProfile = () => {
                   loading="eager"
                   className="w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full object-cover border-4 border-background shadow-lg"
                 />
+                {/* VERIFIED badge - Hidden until backoffice is ready
                 {creator.is_verified && (
                   <Badge className="absolute bottom-4 right-4 bg-primary text-primary-foreground">
                     VERIFIED
                   </Badge>
                 )}
+                */}
               </div>
 
               <div className="space-y-2">
@@ -141,11 +143,13 @@ const CreatorProfile = () => {
                 ) : null}
               </div>
 
+              {/* PROMOTED badge - Hidden until backoffice is ready
               {creator.promoted && (
                 <Badge className="bg-primary text-primary-foreground text-sm">
                   PROMOTED
                 </Badge>
               )}
+              */}
             </div>
           </div>
         </section>

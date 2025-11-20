@@ -26,18 +26,8 @@ const CreatorCard = memo(({ creator }: CreatorCardProps) => {
   // Get display name
   const displayName = creator.display_name || creator.username;
 
-  // Get image with fallback - handle broken onlyfinder.com URLs
-  const getImageUrl = () => {
-    if (!creator.profile_image_url) {
-      return "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop";
-    }
-    // If URL contains onlyfinder.com or 404, use fallback
-    if (creator.profile_image_url.includes('onlyfinder.com') || creator.profile_image_url.includes('404')) {
-      return "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop";
-    }
-    return creator.profile_image_url;
-  };
-  const imageUrl = getImageUrl();
+  // Get image with fallback
+  const imageUrl = creator.profile_image_url || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop";
 
   // Format price for display
   const priceDisplay = formatPrice(creator.subscription_price);

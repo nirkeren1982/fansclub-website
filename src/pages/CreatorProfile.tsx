@@ -110,10 +110,20 @@ const CreatorProfile = () => {
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative">
                 <img
-                  src={creator.profile_image_url || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"}
+                  src={
+                    !creator.profile_image_url || 
+                    creator.profile_image_url.includes('onlyfinder.com') || 
+                    creator.profile_image_url.includes('404')
+                      ? "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"
+                      : creator.profile_image_url
+                  }
                   alt={`${creator.display_name || creator.username} - OnlyFans Creator Profile Picture`}
                   loading="eager"
                   className="w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full object-cover border-4 border-background shadow-lg"
+                  onError={(e) => {
+                    // Fallback if image fails to load
+                    e.currentTarget.src = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop";
+                  }}
                 />
                 {/* VERIFIED badge - Hidden until backoffice is ready
                 {creator.is_verified && (

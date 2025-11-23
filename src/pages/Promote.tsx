@@ -79,7 +79,7 @@ const Promote = () => {
       
       <Header />
       <main className="flex-1">
-        <section className="w-full py-16 md:py-24 bg-background">
+        <section className="w-full py-8 md:py-24 bg-background">
           <div className="container px-8 md:px-12 lg:px-16 max-w-3xl mx-auto">
             {/* Header */}
             <div className="text-center mb-12">

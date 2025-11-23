@@ -170,7 +170,7 @@ const Search = () => {
       
       <Header />
       <main className="flex-1">
-        <section className="w-full py-16 md:py-24 bg-background">
+        <section className="w-full py-8 md:py-24 bg-background">
           <div className="container px-8 md:px-24 lg:px-24">
             <div className="flex flex-col space-y-8">
               {/* Header */}

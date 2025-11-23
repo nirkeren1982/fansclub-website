@@ -33,7 +33,7 @@ const Hero = () => {
   }, [handleSearch]);
 
   return (
-    <section className="relative w-full bg-gradient-to-b from-background to-secondary py-16 md:py-24">
+    <section id="hero" className="relative w-full bg-gradient-to-b from-background to-secondary py-8 md:py-24">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center text-center space-y-8">
           {/* Heading */}

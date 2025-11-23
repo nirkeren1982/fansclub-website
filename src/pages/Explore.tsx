@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Header from "@/components/Header";
 import CreatorCard from "@/components/CreatorCard";
 import Footer from "@/components/Footer";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCreators } from '../hooks/useCreators';
 import type { Creator } from '@/lib/api';
@@ -10,16 +11,13 @@ import { ItemListSchema } from "@/components/SEO/StructuredData";
 import { generateTitle } from "@/utils/seo";
 
 const Explore = () => {
-  const [allCreators, setAllCreators] = useState<Creator[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<'popular' | 'newest' | 'price_low' | 'price_high'>('popular');
-  const [hasMore, setHasMore] = useState(true);
-  const observerTarget = useRef<HTMLDivElement>(null);
+  const creatorsPerPage = 28; // 7 rows × 4 columns
   
-  const limit = 24;
   const { creators, total, loading, error } = useCreators({
-    limit,
-    offset: (currentPage - 1) * limit,
+    limit: creatorsPerPage,
+    offset: (currentPage - 1) * creatorsPerPage,
   });
 
   // Helper function for alphabetical sorting (case-insensitive)
@@ -30,8 +28,9 @@ const Explore = () => {
   };
 
   // Apply sorting to creators
-  const sortCreators = (creatorsToSort: Creator[]) => {
-    const sorted = [...creatorsToSort];
+  const sortedCreators = (() => {
+    if (!creators) return [];
+    const sorted = [...creators];
     
     switch (sortBy) {
       case 'price_low':
@@ -81,57 +80,18 @@ const Explore = () => {
       default:
         return sorted;
     }
-  };
-
-  // Append new creators when they load
-  useEffect(() => {
-    if (creators && creators.length > 0) {
-      if (currentPage === 1) {
-        // First page - replace all creators and apply sorting
-        setAllCreators(sortCreators(creators));
-      } else {
-        // Subsequent pages - append to existing and re-sort all
-        const combined = [...allCreators, ...creators];
-        setAllCreators(sortCreators(combined));
-      }
-      
-      // Check if there are more creators to load
-      const loadedCount = currentPage * limit;
-      setHasMore(loadedCount < total);
-    }
-  }, [creators, currentPage, total, limit]);
+  })();
 
   // Reset when sort changes
   const handleSortChange = (value: string) => {
     setSortBy(value as 'popular' | 'newest' | 'price_low' | 'price_high');
     setCurrentPage(1);
-    setAllCreators([]);
-    setHasMore(true);
   };
 
-  // Intersection Observer for infinite scroll
-  const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
-    const [target] = entries;
-    if (target.isIntersecting && hasMore && !loading) {
-      setCurrentPage(prev => prev + 1);
-    }
-  }, [hasMore, loading]);
-
-  useEffect(() => {
-    const element = observerTarget.current;
-    if (!element) return;
-
-    const option = {
-      root: null,
-      rootMargin: '100px',
-      threshold: 0,
-    };
-
-    const observer = new IntersectionObserver(handleObserver, option);
-    observer.observe(element);
-
-    return () => observer.unobserve(element);
-  }, [handleObserver]);
+  // Calculate pagination info
+  const totalPages = Math.ceil(total / creatorsPerPage);
+  const startIndex = (currentPage - 1) * creatorsPerPage + 1;
+  const endIndex = Math.min(currentPage * creatorsPerPage, total);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -141,11 +101,11 @@ const Explore = () => {
         canonical="/explore"
         keywords="OnlyFans models, explore creators, adult content, OnlyFans directory, verified models"
       />
-      {allCreators.length > 0 && (
+      {sortedCreators.length > 0 && (
         <ItemListSchema
-          creators={allCreators}
+          creators={sortedCreators}
           pageTitle="Explore OnlyFans Models"
-          pageUrl="/explore"
+          pageUrl={`/explore?page=${currentPage}`}
         />
       )}
       
@@ -154,7 +114,7 @@ const Explore = () => {
         <section className="w-full py-16 md:py-24 bg-background">
           <div className="container px-8 md:px-24 lg:px-24">
             <div className="flex flex-col space-y-8">
-              <div className="text-center md:text-left">
+              <div className="text-center md:text-center">
                 <h1 className="text-3xl md:text-5xl font-black">Explore OnlyFans Models</h1>
                 <p className="text-muted-foreground mt-2 text-lg">
                   Find your next OnlyFans creator
@@ -186,22 +146,22 @@ const Explore = () => {
               ) : (
                 <>
                   {/* Creators Grid */}
-                  {allCreators.length === 0 && loading ? (
+                  {sortedCreators.length === 0 && loading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                      {[...Array(24)].map((_, i) => (
+                      {[...Array(28)].map((_, i) => (
                         <div key={i} className="animate-pulse">
                           <div className="bg-gray-200 h-64 rounded-lg"></div>
                         </div>
                       ))}
                     </div>
-                  ) : allCreators.length === 0 ? (
+                  ) : sortedCreators.length === 0 ? (
                     <div className="text-center py-12">
                       <p className="text-2xl font-bold text-muted-foreground">No creators found</p>
                       <p className="text-muted-foreground mt-2">Check back later for new creators</p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                      {allCreators.map((creator) => (
+                      {sortedCreators.map((creator) => (
                         <CreatorCard
                           key={creator.id || creator.username}
                           creator={creator}
@@ -210,27 +170,54 @@ const Explore = () => {
                     </div>
                   )}
 
-                  {/* Loading indicator for lazy load */}
-                  {loading && allCreators.length > 0 && (
-                    <div className="flex justify-center items-center py-8">
-                      <div className="flex items-center gap-3">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                        <p className="text-muted-foreground">Loading more creators...</p>
+                  {/* Pagination Info */}
+                  {sortedCreators.length > 0 && (
+                    <div className="flex justify-center py-8 border-t pt-8">
+                      <div className="flex gap-2 items-center flex-wrap justify-center">
+                        <Button
+                          variant="outline"
+                          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                          disabled={currentPage === 1 || loading}
+                        >
+                          ← Previous
+                        </Button>
+                        
+                        {/* Page Numbers */}
+                        <div className="flex gap-1">
+                          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                            let pageNum;
+                            if (totalPages <= 5) {
+                              pageNum = i + 1;
+                            } else if (currentPage <= 3) {
+                              pageNum = i + 1;
+                            } else if (currentPage >= totalPages - 2) {
+                              pageNum = totalPages - 4 + i;
+                            } else {
+                              pageNum = currentPage - 2 + i;
+                            }
+                            
+                            return (
+                              <Button
+                                key={pageNum}
+                                variant={currentPage === pageNum ? "default" : "outline"}
+                                onClick={() => setCurrentPage(pageNum)}
+                                disabled={loading}
+                                className="w-10"
+                              >
+                                {pageNum}
+                              </Button>
+                            );
+                          })}
+                        </div>
+
+                        <Button
+                          variant="outline"
+                          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                          disabled={currentPage === totalPages || loading}
+                        >
+                          Next →
+                        </Button>
                       </div>
-                    </div>
-                  )}
-
-                  {/* Intersection observer target for infinite scroll */}
-                  {hasMore && !loading && (
-                    <div ref={observerTarget} className="h-10" />
-                  )}
-
-                  {/* End of list message */}
-                  {!hasMore && allCreators.length > 0 && (
-                    <div className="text-center py-8">
-                      <p className="text-muted-foreground">
-                        You've reached the end! • {allCreators.length} creators loaded
-                      </p>
                     </div>
                   )}
                 </>

@@ -50,7 +50,7 @@ const Contact = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <div className="container px-4 py-16 md:py-24 max-w-2xl mx-auto">
+        <div className="container px-4 py-8 md:py-24 max-w-2xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
             <p className="text-muted-foreground text-lg">

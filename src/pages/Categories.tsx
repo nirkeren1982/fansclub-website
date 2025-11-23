@@ -97,7 +97,7 @@ const Categories = () => {
         </section>
 
         {/* Categories Section */}
-        <section className="w-full py-16 md:py-24 bg-card">
+        <section className="w-full py-8 md:py-24 bg-card">
           <div className="container px-4 md:px-6">
             <div className="space-y-8">
               <div className="flex items-center gap-3">

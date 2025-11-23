@@ -6,7 +6,7 @@ const About = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <div className="container px-4 py-16 md:py-24 max-w-4xl mx-auto">
+        <div className="container px-4 py-8 md:py-24 max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-8">About CreatorHub</h1>
           
           <div className="prose prose-lg max-w-none space-y-6 text-muted-foreground">

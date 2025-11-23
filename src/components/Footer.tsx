@@ -3,18 +3,20 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="w-full py-12 bg-card border-t text-sm md:text-base">
-      <div className="container px-8 md:px-24 lg:px-24">
+      <footer className="container px-8 md:px-24 lg:px-24">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-3">
             <div className="flex items-center">
-              <img 
-                src="/logo.svg" 
-                alt="FansClubOnly" 
-                className="h-14 md:h-16 w-auto"
-                width="200"
-                height="60"
-              />
+              <a href="#hero" className="hover:opacity-80 transition-opacity">
+                <img 
+                  src="/logo.svg" 
+                  alt="FansClubOnly" 
+                  className="h-14 md:h-16 w-auto"
+                  width="200"
+                  height="60"
+                />
+              </a>
             </div>
             <p className="text-sm md:text-base text-muted-foreground">
               The ultimate creator search engine. Find and connect with talented creators worldwide.
@@ -53,7 +55,7 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-      </div>
+      </footer>
     </footer>
   );
 };

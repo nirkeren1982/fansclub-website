@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Creator } from "@/lib/api";
+import { getCreatorImageUrl, handleImageError } from "@/utils/imageUtils";
 
 interface CreatorCardProps {
   creator: Creator;
@@ -26,8 +27,8 @@ const CreatorCard = memo(({ creator }: CreatorCardProps) => {
   // Get display name
   const displayName = creator.display_name || creator.username;
 
-  // Get image with fallback
-  const imageUrl = creator.profile_image_url || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop";
+  // Get image from local images folder (not from DB)
+  const imageUrl = getCreatorImageUrl(creator.username);
 
   // Format price for display
   const priceDisplay = formatPrice(creator.subscription_price);
@@ -41,6 +42,7 @@ const CreatorCard = memo(({ creator }: CreatorCardProps) => {
             alt={`${displayName} - OnlyFans Creator Profile Picture`}
             loading="lazy"
             className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+            onError={(e) => handleImageError(e, creator.username)}
           />
           {/* PROMOTED badge - Hidden until backoffice is ready
           {creator.promoted && (

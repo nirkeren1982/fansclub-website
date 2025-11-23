@@ -99,7 +99,7 @@ const Blog = () => {
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="py-16 md:py-24 bg-gradient-to-b from-primary/5 to-background">
+        <section className="py-8 md:py-24 bg-gradient-to-b from-primary/5 to-background">
           <div className="container px-4">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-6xl font-bold mb-6">
@@ -113,7 +113,7 @@ const Blog = () => {
         </section>
 
         {/* Blog Grid */}
-        <section className="py-16">
+        <section className="py-8">
           <div className="container px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {blogPosts.map((post) => (

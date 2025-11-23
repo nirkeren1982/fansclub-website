@@ -103,7 +103,7 @@ export function TrendingCreators() {
 
   if (loading) {
     return (
-      <section className="py-16 bg-gray-50">
+      <section className="py-8 bg-white">
         <div className="container mx-auto px-8 md:px-24 lg:px-24">
           <div className="text-center mb-12">
             <h3 className="text-h3-mobile md:text-h3-desktop font-bold mb-4 text-black">Trending Creators</h3>
@@ -127,7 +127,7 @@ export function TrendingCreators() {
 
   if (error) {
     return (
-      <section className="py-16 bg-gray-50">
+      <section className="py-8 bg-white">
         <div className="container mx-auto px-8 md:px-24 lg:px-24">
           <Alert variant="destructive" className="max-w-2xl mx-auto">
             <AlertDescription>
@@ -141,7 +141,7 @@ export function TrendingCreators() {
 
   if (!dailyCreators || dailyCreators.length === 0) {
     return (
-      <section className="py-16 bg-gray-50">
+      <section className="py-8 bg-white">
         <div className="container mx-auto px-8 md:px-24 lg:px-24">
           <div className="text-center">
             <h3 className="text-h3-mobile md:text-h3-desktop font-bold mb-4 text-black">Trending Creators</h3>
@@ -159,7 +159,7 @@ export function TrendingCreators() {
   }
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-8 bg-white">
       <div className="container mx-auto px-8 md:px-24 lg:px-24">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-pink-100 text-pink-700 px-4 py-2 rounded-full mb-4">

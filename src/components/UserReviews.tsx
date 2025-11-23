@@ -9,7 +9,7 @@ const UserReviews = () => {
   ];
 
   return (
-    <section className="w-full py-16 md:py-24 bg-background">
+    <section className="w-full py-8 md:py-24 bg-background">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center space-y-8">
           {/* Badge */}

@@ -6,7 +6,7 @@ const Privacy = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <div className="container px-4 py-16 md:py-24 max-w-4xl mx-auto">
+        <div className="container px-4 py-8 md:py-24 max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Privacy Policy</h1>
           <p className="text-muted-foreground mb-8">Last updated: January 2025</p>
           

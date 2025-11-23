@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const PromoSection = () => {
   return (
-    <section className="py-16 bg-background">
+    <section className="py-8 bg-background">
       <div className="container mx-auto px-8 md:px-12 lg:px-16">
         {/* Header */}
         <div className="text-center mb-12">

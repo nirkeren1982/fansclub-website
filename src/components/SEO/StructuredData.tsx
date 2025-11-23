@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
 import { SITE_URL, SITE_NAME } from '@/utils/seo';
-import { getCreatorImageUrl } from '@/utils/imageUtils';
 import type { Creator } from '@/lib/api';
 
 // WebSite Schema for Homepage
@@ -68,7 +67,7 @@ export function ItemListSchema({ creators, pageTitle, pageUrl }: ItemListSchemaP
         '@type': 'Person',
         name: creator.display_name || creator.username,
         url: `${SITE_URL}/creator/${creator.username}`,
-        image: `${SITE_URL}${getCreatorImageUrl(creator.username)}`,
+        image: creator.profile_image_url || `${SITE_URL}/og-default.jpg`,
       },
     })),
   };
@@ -92,7 +91,7 @@ export function PersonSchema({ creator }: PersonSchemaProps) {
     name: creator.display_name || creator.username,
     alternateName: creator.username,
     url: `${SITE_URL}/creator/${creator.username}`,
-    image: `${SITE_URL}${getCreatorImageUrl(creator.username)}`,
+    image: creator.profile_image_url || `${SITE_URL}/og-default.jpg`,
     description: creator.bio || undefined,
     identifier: creator.id,
     mainEntityOfPage: {

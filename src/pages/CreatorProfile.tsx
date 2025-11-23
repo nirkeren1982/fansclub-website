@@ -11,8 +11,6 @@ import { useCreators } from '../hooks/useCreators';
 import { MetaTags } from "@/components/SEO/MetaTags";
 import { PersonSchema, BreadcrumbSchema } from "@/components/SEO/StructuredData";
 import { generateTitle, truncateDescription } from "@/utils/seo";
-import { getCreatorImageUrl, handleImageError } from "@/utils/imageUtils";
-import type { Creator } from '@/lib/api';
 
 const CreatorProfile = () => {
   const { username } = useParams();
@@ -122,7 +120,7 @@ const CreatorProfile = () => {
         title={generateTitle(pageTitle)}
         description={truncateDescription(pageDescription)}
         canonical={`/creator/${creator.username}`}
-        ogImage={getCreatorImageUrl(creator.username)}
+        ogImage={creator.profile_image_url || '/og-default.jpg'}
         keywords={`${creator.username}, ${creator.display_name || creator.username}, OnlyFans, ${creator.categories?.join(', ') || ''}`}
         type="profile"
       />
@@ -136,18 +134,18 @@ const CreatorProfile = () => {
       />
       
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 overflow-x-hidden">
         {/* Hero Section */}
-        <section className="w-full pt-4 md:pt-8 pb-0 bg-secondary/20">
+        <section className="w-full pt-8 md:pt-12 pb-0 bg-secondary/20">
           <div className="container px-8 md:px-12 lg:px-16">
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative">
                 <img
-                  src={getCreatorImageUrl(creator.username)}
+                  src={creator.profile_image_url || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop'}
                   alt={`${creator.display_name || creator.username} - OnlyFans Creator Profile Picture`}
                   loading="eager"
                   className="w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full object-cover border-4 border-background shadow-lg"
-                  onError={(e) => handleImageError(e, creator.username)}
+                  onError={(e) => e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop'}
                 />
                 {/* VERIFIED badge - Hidden until backoffice is ready
                 {creator.is_verified && (

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CreatorCard from "@/components/CreatorCard";
@@ -16,9 +16,6 @@ const CreatorProfile = () => {
   const { username } = useParams();
   const { creator, loading, error } = useCreator(username || '');
   const { creators: allCreators } = useCreators({ limit: 50, sort: 'popular' });
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const autoSlideTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Get random creators (excluding current creator)
   const randomCreators = useMemo(() => {
@@ -31,35 +28,6 @@ const CreatorProfile = () => {
     const shuffled = [...filtered].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, 4);
   }, [allCreators, username]);
-
-  // Auto-slide carousel every 5 seconds
-  useEffect(() => {
-    const startAutoSlide = () => {
-      autoSlideTimerRef.current = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % randomCreators.length);
-      }, 5000);
-    };
-
-    const stopAutoSlide = () => {
-      if (autoSlideTimerRef.current) {
-        clearInterval(autoSlideTimerRef.current);
-      }
-    };
-
-    if (randomCreators.length > 0) {
-      startAutoSlide();
-    }
-
-    return () => stopAutoSlide();
-  }, [randomCreators.length]);
-
-  // Scroll carousel to current slide
-  useEffect(() => {
-    if (carouselRef.current && randomCreators.length > 0) {
-      const scrollLeft = currentSlide * (window.innerWidth * 0.85 + 16); // 85vw + gap
-      carouselRef.current.scrollLeft = scrollLeft;
-    }
-  }, [currentSlide, randomCreators.length]);
 
   // Loading state
   if (loading) {
@@ -274,54 +242,19 @@ const CreatorProfile = () => {
           </div>
         </section>
 
-        {/* Related Creators */}
+        {/* Similar Creators */}
         <section className="w-full py-4 bg-background">
           <div className="container px-8 md:px-12 lg:px-16">
             <h2 className="text-2xl md:text-3xl font-black mb-8 text-center">Similar Creators</h2>
             {randomCreators.length > 0 ? (
-              <>
-                {/* Mobile Carousel */}
-                <div className="md:hidden">
-                  <div 
-                    ref={carouselRef}
-                    className="flex gap-4 overflow-x-auto scroll-smooth pb-4 -mx-4 px-4 snap-x snap-mandatory"
-                  >
-                    {randomCreators.map((randomCreator) => (
-                      <div key={randomCreator.id || randomCreator.username} className="flex-shrink-0 w-[85vw] snap-center">
-                        <CreatorCard
-                          creator={randomCreator}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {/* Carousel Dots */}
-                  <div className="flex justify-center gap-2 mt-4">
-                    {randomCreators.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`h-2 rounded-full transition-all ${
-                          currentSlide === index 
-                            ? 'w-6 bg-primary' 
-                            : 'w-2 bg-gray-300'
-                        }`}
-                        aria-label={`Go to slide ${index + 1}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Desktop Grid */}
-                <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                  {randomCreators.map((randomCreator) => (
-                    <CreatorCard
-                      key={randomCreator.id || randomCreator.username}
-                      creator={randomCreator}
-                    />
-                  ))}
-                </div>
-              </>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                {randomCreators.map((randomCreator) => (
+                  <CreatorCard
+                    key={randomCreator.id || randomCreator.username}
+                    creator={randomCreator}
+                  />
+                ))}
+              </div>
             ) : (
               <p className="text-center text-muted-foreground py-8">Loading similar creators...</p>
             )}

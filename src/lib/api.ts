@@ -4,12 +4,16 @@ export interface Creator {
   id?: string
   username: string
   display_name?: string | null
+  full_name?: string | null
   profile_image_url?: string | null
   bio?: string | null
   subscription_price?: number | null
   onlyfans_url?: string | null
+  instagram_url?: string | null
+  twitter_url?: string | null
   country?: string | null
   categories?: string[]
+  activities?: string[] // Extracted from bio
   likes_count?: number | null
   photos_count?: number | null
   videos_count?: number | null

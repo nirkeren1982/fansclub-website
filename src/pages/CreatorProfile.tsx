@@ -11,6 +11,8 @@ import { useCreators } from '../hooks/useCreators';
 import { MetaTags } from "@/components/SEO/MetaTags";
 import { PersonSchema, BreadcrumbSchema } from "@/components/SEO/StructuredData";
 import { generateTitle, truncateDescription } from "@/utils/seo";
+import { CreatorContentSection } from "@/components/creator/CreatorContentSection";
+import { generatePageTitle, generateMetaDescription } from "@/utils/contentTemplates";
 
 const CreatorProfile = () => {
   const { username } = useParams();
@@ -78,15 +80,14 @@ const CreatorProfile = () => {
     );
   }
 
-  const pageTitle = `${creator.display_name || creator.username} (@${creator.username}) - OnlyFans Profile`;
-  const bioExcerpt = creator.bio ? truncateDescription(creator.bio, 155) : `OnlyFans profile for ${creator.display_name || creator.username}`;
-  const pageDescription = `${bioExcerpt} - ${creator.likes_count || 0} likes, ${creator.photos_count || 0} photos, ${creator.videos_count || 0} videos. Subscription: $${creator.subscription_price || 'Free'}. View full profile on FansClubOnly.`;
+  const pageTitle = generatePageTitle(creator);
+  const pageDescription = generateMetaDescription(creator);
 
   return (
     <div className="min-h-screen flex flex-col">
       <MetaTags
-        title={generateTitle(pageTitle)}
-        description={truncateDescription(pageDescription)}
+        title={pageTitle}
+        description={pageDescription}
         canonical={`/creator/${creator.username}`}
         ogImage={creator.profile_image_url || '/og-default.jpg'}
         keywords={`${creator.username}, ${creator.display_name || creator.username}, OnlyFans, ${creator.categories?.join(', ') || ''}`}
@@ -239,6 +240,13 @@ const CreatorProfile = () => {
                 )}
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Dynamic Content Section - SEO-rich generated content */}
+        <section className="w-full py-8 md:py-12 bg-background">
+          <div className="container px-8 md:px-12 lg:px-16 max-w-5xl mx-auto">
+            <CreatorContentSection creator={creator} />
           </div>
         </section>
 

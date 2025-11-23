@@ -78,18 +78,21 @@ async function generateSitemap() {
   console.log('Fetching creators from database...');
   try {
     const { data: creators, error } = await supabase
-      .from('v_creators')
+      .from('creators')
       .select('username, last_updated')
+      .eq('status', 'active')
       .order('last_updated', { ascending: false });
 
     if (error) {
       console.error('Error fetching creators:', error);
-    } else {
+    } else if (creators && creators.length > 0) {
       console.log(`Adding ${creators.length} creator profiles...`);
       creators.forEach(creator => {
         const lastmod = creator.last_updated ? new Date(creator.last_updated).toISOString().split('T')[0] : null;
         urls.push(generateUrlEntry(`${SITE_URL}/creator/${creator.username}`, lastmod, 'weekly', '0.7'));
       });
+    } else {
+      console.log('No creators found in database');
     }
   } catch (err) {
     console.error('Failed to fetch creators:', err);

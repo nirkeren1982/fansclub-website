@@ -4,7 +4,6 @@ import {
   generateContentStyleDescription,
   generateSubscriptionGuide,
   generateFAQs,
-  generateStatsHighlights,
   generateWhySubscribe,
   type FAQ
 } from '@/utils/contentTemplates';
@@ -27,7 +26,6 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
   }, [creator.bio, creator.activities]);
   
   const overview = generateCreatorOverview({ ...creator, activities });
-  const stats = generateStatsHighlights({ ...creator, activities });
   const reasons = generateWhySubscribe({ ...creator, activities });
   const faqs = generateFAQs({ ...creator, activities });
   const name = creator.display_name || creator.username;
@@ -41,25 +39,6 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
           {overview}
         </p>
       </section>
-
-      {/* Stats Grid */}
-      {stats.length > 0 && (
-        <section>
-          <h2 className="text-3xl font-bold mb-6">Profile Highlights</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {stats.map((stat, index) => (
-              <div 
-                key={index}
-                className="bg-secondary/20 rounded-lg p-4 text-center hover:bg-secondary/30 transition-colors"
-              >
-                <div className="text-3xl mb-2" aria-hidden="true">{stat.icon}</div>
-                <div className="text-2xl font-bold text-foreground mb-1">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* Content & Services Details */}
       {activities.length > 0 && (

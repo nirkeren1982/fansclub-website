@@ -182,6 +182,7 @@ const CreatorProfile = () => {
               </div>
 
               {/* Stats */}
+              <h3 className="text-2xl font-bold text-center mb-4">Creator's statistics</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary">

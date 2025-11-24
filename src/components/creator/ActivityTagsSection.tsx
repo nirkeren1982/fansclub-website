@@ -19,7 +19,7 @@ export function ActivityTagsSection({ activities, creatorName, username }: Activ
         Click any tag to find similar creators:
       </p>
       
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-3 md:justify-center">
         {activities.map((activity) => {
           const colorClasses = getActivityColor(activity);
           const slug = activityToSlug(activity);

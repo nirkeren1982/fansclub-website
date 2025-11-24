@@ -97,8 +97,8 @@ const CreatorCard = memo(({ creator }: CreatorCardProps) => {
             </div>
           </div>
 
-          {/* Categories */}
-          {creator.categories && creator.categories.length > 0 && (
+          {/* Categories - Hidden, only shown on creator profile page */}
+          {/* {creator.categories && creator.categories.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {creator.categories.slice(0, 3).map((category, index) => (
                 <Badge key={index} variant="secondary" className="text-xs">
@@ -106,7 +106,7 @@ const CreatorCard = memo(({ creator }: CreatorCardProps) => {
                 </Badge>
               ))}
             </div>
-          )}
+          )} */}
 
           <Button asChild className="w-full gap-2 group-hover:bg-primary group-hover:text-primary-foreground">
             <div>

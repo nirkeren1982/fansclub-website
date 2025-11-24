@@ -53,7 +53,7 @@ const CreatorCard = memo(({ creator }: CreatorCardProps) => {
           */}
         </div>
         <CardContent className="p-4 space-y-3">
-          <div>
+          <div className="text-center">
             <h3 className="font-bold text-lg line-clamp-1">{displayName}</h3>
             <p className="text-sm text-muted-foreground">@{creator.username}</p>
           </div>

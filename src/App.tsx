@@ -22,6 +22,7 @@ const Terms = lazy(() => import("./pages/Terms"));
 const Dmca = lazy(() => import("./pages/Dmca"));
 const Cookies = lazy(() => import("./pages/Cookies"));
 const Contact = lazy(() => import("./pages/Contact"));
+const Qa = lazy(() => import("./pages/Qa"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Loading fallback component
@@ -58,6 +59,7 @@ const App = () => (
             <Route path="/dmca" element={<Dmca />} />
             <Route path="/cookies" element={<Cookies />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/qa" element={<Qa />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

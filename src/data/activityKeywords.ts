@@ -494,3 +494,5 @@ export const activityKeywordMap: Record<string, {
 // Export list of all activity categories
 export const allActivityCategories = Object.values(activityKeywordMap).map(v => v.category);
 
+
+

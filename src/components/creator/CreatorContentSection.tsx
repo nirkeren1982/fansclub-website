@@ -1,5 +1,4 @@
 import type { Creator } from '@/lib/api';
-import { ActivityTagsSection } from './ActivityTagsSection';
 import { 
   generateCreatorOverview,
   generateContentStyleDescription,
@@ -59,13 +58,6 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
               </div>
             ))}
           </div>
-        </section>
-      )}
-
-      {/* Activity Tags - NEW */}
-      {activities.length > 0 && (
-        <section>
-          <ActivityTagsSection activities={activities} creatorName={name} />
         </section>
       )}
 
@@ -215,4 +207,6 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
     </div>
   );
 }
+
+
 

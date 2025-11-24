@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CreatorCard from "@/components/CreatorCard";
@@ -13,11 +13,26 @@ import { PersonSchema, BreadcrumbSchema } from "@/components/SEO/StructuredData"
 import { generateTitle, truncateDescription } from "@/utils/seo";
 import { CreatorContentSection } from "@/components/creator/CreatorContentSection";
 import { generatePageTitle, generateMetaDescription } from "@/utils/contentTemplates";
+import { ActivityTagsSection } from "@/components/creator/ActivityTagsSection";
+import { extractActivitiesFromBio } from "@/utils/activityExtractor";
 
 const CreatorProfile = () => {
   const { username } = useParams();
   const { creator, loading, error } = useCreator(username || '');
   const { creators: allCreators } = useCreators({ limit: 50, sort: 'popular' });
+  const [activities, setActivities] = useState<string[]>([]);
+
+  // Extract activities from bio if not already extracted
+  useEffect(() => {
+    if (creator) {
+      if (creator.activities && creator.activities.length > 0) {
+        setActivities(creator.activities);
+      } else {
+        const extracted = extractActivitiesFromBio(creator.bio);
+        setActivities(extracted);
+      }
+    }
+  }, [creator]);
 
   // Get random creators (excluding current creator)
   const randomCreators = useMemo(() => {
@@ -242,6 +257,15 @@ const CreatorProfile = () => {
             </div>
           </div>
         </section>
+
+        {/* Services Section - Activity Tags */}
+        {activities.length > 0 && (
+          <section className="w-full py-4 bg-background">
+            <div className="container px-8 md:px-12 lg:px-16 max-w-3xl mx-auto">
+              <ActivityTagsSection activities={activities} creatorName={creator.display_name || creator.username} />
+            </div>
+          </section>
+        )}
 
         {/* Dynamic Content Section - SEO-rich generated content */}
         <section className="w-full py-8 md:py-12 bg-background">

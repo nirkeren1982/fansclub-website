@@ -47,3 +47,5 @@ export function ActivityTagsSection({ activities, creatorName }: ActivityTagsSec
   );
 }
 
+
+

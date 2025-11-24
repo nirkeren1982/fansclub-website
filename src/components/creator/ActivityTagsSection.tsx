@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { getActivityIcon, getActivityColor, activityToSlug } from '@/utils/activityExtractor';
+import { getActivityColor, activityToSlug } from '@/utils/activityExtractor';
 
 interface ActivityTagsSectionProps {
   activities: string[];
@@ -20,7 +20,6 @@ export function ActivityTagsSection({ activities, creatorName }: ActivityTagsSec
       
       <div className="flex flex-wrap gap-3">
         {activities.map((activity) => {
-          const icon = getActivityIcon(activity);
           const colorClasses = getActivityColor(activity);
           const slug = activityToSlug(activity);
           
@@ -28,10 +27,9 @@ export function ActivityTagsSection({ activities, creatorName }: ActivityTagsSec
             <Link
               key={activity}
               to={`/search?activity=${encodeURIComponent(slug)}`}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 font-medium text-sm transition-all hover:scale-105 hover:shadow-md ${colorClasses}`}
+              className={`inline-flex items-center px-4 py-2 rounded-full border-2 font-medium text-sm transition-all hover:scale-105 hover:shadow-md ${colorClasses}`}
             >
-              <span className="text-lg" aria-hidden="true">{icon}</span>
-              <span>{activity}</span>
+              {activity}
             </Link>
           );
         })}

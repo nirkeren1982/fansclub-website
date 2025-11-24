@@ -29,12 +29,13 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
   const reasons = generateWhySubscribe({ ...creator, activities });
   const faqs = generateFAQs({ ...creator, activities });
   const name = creator.display_name || creator.username;
+  const displayName = creator.display_name || creator.username;
   
   return (
     <div className="space-y-8 md:space-y-12">
       {/* Creator Overview */}
       <section>
-        <h2 className="text-3xl font-bold mb-4">About {name}</h2>
+        <h2 className="text-3xl font-bold mb-4 text-center">About {displayName}</h2>
         <p className="text-lg text-muted-foreground leading-relaxed">
           {overview}
         </p>
@@ -43,7 +44,7 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
       {/* Content & Services Details */}
       {activities.length > 0 && (
         <section>
-          <h2 className="text-3xl font-bold mb-6">Content & Services Offered</h2>
+          <h2 className="text-3xl font-bold mb-6 text-center">Main content</h2>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 md:p-8 border border-border">
             <p className="text-muted-foreground mb-6">
               {name} provides a variety of content and services for subscribers:
@@ -76,7 +77,7 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
       {/* Why Subscribe */}
       {reasons.length > 0 && (
         <section>
-          <h2 className="text-3xl font-bold mb-6">Why Subscribe to {name}?</h2>
+          <h2 className="text-3xl font-bold mb-6 text-center">Why Subscribe to {name}?</h2>
           <div className="bg-gradient-to-br from-primary/5 via-purple-500/5 to-pink-500/5 rounded-lg p-6 md:p-8 border border-primary/20">
             <ul className="space-y-4">
               {reasons.map((reason, index) => (
@@ -92,8 +93,8 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
         </section>
       )}
 
-      {/* Subscription Guide */}
-      <section>
+      {/* Subscription Guide - Hidden */}
+      {/* <section>
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 md:p-8 border-2 border-primary/30">
           <div 
             className="prose prose-lg max-w-none dark:prose-invert"
@@ -108,10 +109,10 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
             }}
           />
         </div>
-      </section>
+      </section> */}
 
-      {/* Content Style Description */}
-      <section>
+      {/* Content Style Description - Hidden */}
+      {/* <section>
         <div className="bg-secondary/10 rounded-lg p-6 md:p-8">
           <div 
             className="prose prose-lg max-w-none dark:prose-invert"
@@ -125,7 +126,7 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
             }}
           />
         </div>
-      </section>
+      </section> */}
 
       {/* FAQs */}
       {faqs.length > 0 && (

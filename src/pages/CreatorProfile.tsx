@@ -174,7 +174,7 @@ const CreatorProfile = () => {
         <section className="w-full py-4 bg-background" id="creators_details">
           <div className="container px-8 md:px-12 lg:px-16 max-w-3xl mx-auto">
             <div className="space-y-6">
-              <div>
+              <div className="border-b pb-6">
                 <h2 className="text-2xl font-bold mb-4 text-center">About</h2>
                 <p className="text-bio-mobile md:text-bio-desktop text-[hsl(0_0%_45%)] leading-relaxed">
                   {creator.bio || "No bio available"}
@@ -183,7 +183,7 @@ const CreatorProfile = () => {
 
               {/* Stats */}
               <h3 className="text-2xl font-bold text-center mb-4">Creator's statistics</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary">
                     {creator.likes_count ? creator.likes_count.toLocaleString() : '0'}

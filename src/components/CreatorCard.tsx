@@ -18,6 +18,28 @@ const CreatorCard = memo(({ creator }: CreatorCardProps) => {
     return likes.toLocaleString();
   };
 
+  // Format likes count with K/M notation
+  const formatLikesCompact = (likes: number | null) => {
+    if (likes === null || likes === undefined) return "0";
+    
+    if (likes < 1000) {
+      return `${likes}`;
+    } else if (likes < 1000000) {
+      // Format as K (e.g., 8.3K, 830K)
+      const thousands = likes / 1000;
+      // If it's a whole number, show without decimal (e.g., 830K)
+      if (thousands % 1 === 0) {
+        return `${thousands}K`;
+      }
+      // Otherwise show one decimal place (e.g., 8.3K)
+      return `${thousands.toFixed(1)}K`;
+    } else {
+      // Format as M (e.g., 1.6M)
+      const millions = likes / 1000000;
+      return `${millions.toFixed(1)}M`;
+    }
+  };
+
   // Format price
   const formatPrice = (price: number | null) => {
     if (price === null || price === undefined || price === 0) return "FREE";
@@ -58,17 +80,21 @@ const CreatorCard = memo(({ creator }: CreatorCardProps) => {
             <p className="text-sm text-muted-foreground">@{creator.username}</p>
           </div>
           
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-black text-primary">{priceDisplay}</span>
-            {priceDisplay !== "FREE" && (
-              <span className="text-xs text-muted-foreground">/month</span>
-            )}
-          </div>
+          {/* Price and Likes - Two Columns */}
+          <div className="flex items-center justify-between">
+            {/* Left Column - Price */}
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-black text-primary">{priceDisplay}</span>
+              {priceDisplay !== "FREE" && (
+                <span className="text-xs text-muted-foreground">/month</span>
+              )}
+            </div>
 
-          {/* Likes count */}
-          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-            <Heart className="h-4 w-4" />
-            <span>{formatLikes(creator.likes_count)} likes</span>
+            {/* Right Column - Likes count */}
+            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+              <Heart className="h-4 w-4" />
+              <span>{formatLikesCompact(creator.likes_count)} likes</span>
+            </div>
           </div>
 
           {/* Categories */}

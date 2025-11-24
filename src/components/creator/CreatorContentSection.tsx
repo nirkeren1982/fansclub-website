@@ -131,7 +131,7 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
       {/* FAQs */}
       {faqs.length > 0 && (
         <section>
-          <h2 className="text-3xl font-bold mb-6">Frequently Asked Questions</h2>
+          <h2 className="text-3xl font-bold mb-6 text-center">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {faqs.map((faq: FAQ, index: number) => (
               <details 

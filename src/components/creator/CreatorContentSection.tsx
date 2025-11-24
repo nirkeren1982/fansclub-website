@@ -171,7 +171,7 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
               rel="noopener noreferrer"
               className="inline-block bg-white text-primary font-bold px-8 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg"
             >
-              Subscribe on OnlyFans →
+              Subscribe on OnlyFans
             </a>
           )}
         </div>

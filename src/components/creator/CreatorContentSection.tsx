@@ -176,14 +176,6 @@ export function CreatorContentSection({ creator }: CreatorContentSectionProps) {
           )}
         </div>
       </section>
-
-      {/* Disclaimer */}
-      <section className="text-center text-sm text-muted-foreground">
-        <p>
-          FansClubOnly is an independent directory. We are not affiliated with OnlyFans.
-          All trademarks belong to their respective owners.
-        </p>
-      </section>
     </div>
   );
 }

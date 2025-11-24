@@ -56,6 +56,11 @@ const Footer = () => {
             </ul>
           </div>
         </div>
+        
+        {/* Disclaimer */}
+        <p className="text-sm md:text-base text-muted-foreground mt-8 text-center">
+          FansClubOnly is an independent directory. We are not affiliated with OnlyFans. All trademarks belong to their respective owners.
+        </p>
       </footer>
     </footer>
   );

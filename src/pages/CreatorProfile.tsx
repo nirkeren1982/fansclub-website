@@ -260,9 +260,9 @@ const CreatorProfile = () => {
 
         {/* Services Section - Activity Tags */}
         {activities.length > 0 && (
-          <section className="w-full py-4 bg-background">
+          <section id="content" className="w-full py-4 bg-background">
             <div className="container px-8 md:px-12 lg:px-16 max-w-3xl mx-auto">
-              <ActivityTagsSection activities={activities} creatorName={creator.display_name || creator.username} />
+              <ActivityTagsSection activities={activities} creatorName={creator.display_name || creator.username} username={creator.username} />
             </div>
           </section>
         )}

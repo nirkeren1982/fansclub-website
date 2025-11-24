@@ -4,17 +4,18 @@ import { getActivityColor, activityToSlug } from '@/utils/activityExtractor';
 interface ActivityTagsSectionProps {
   activities: string[];
   creatorName?: string;
+  username: string;
 }
 
-export function ActivityTagsSection({ activities, creatorName }: ActivityTagsSectionProps) {
+export function ActivityTagsSection({ activities, creatorName, username }: ActivityTagsSectionProps) {
   if (!activities || activities.length === 0) return null;
   
   return (
     <div className="bg-gradient-to-r from-primary/5 to-purple-500/5 rounded-lg p-6 md:p-8">
-      <h3 className="text-2xl font-bold mb-4">
-        {creatorName ? `${creatorName}'s Services` : 'Content & Services'}
+      <h3 className="text-2xl font-bold mb-4 text-center">
+        {username} Main activity
       </h3>
-      <p className="text-muted-foreground mb-6">
+      <p className="text-muted-foreground mb-6 text-center">
         Click any tag to find similar creators:
       </p>
       
@@ -35,7 +36,7 @@ export function ActivityTagsSection({ activities, creatorName }: ActivityTagsSec
         })}
       </div>
       
-      <div className="mt-6 text-sm text-muted-foreground">
+      <div className="mt-6 text-sm text-muted-foreground text-center">
         <p>
           💡 <strong>Tip:</strong> These tags are automatically detected from the creator's profile. 
           Click any tag to discover more creators offering similar content.

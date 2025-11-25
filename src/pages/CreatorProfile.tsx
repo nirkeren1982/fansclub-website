@@ -128,7 +128,9 @@ const CreatorProfile = () => {
                   src={creator.profile_image_url || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop'}
                   alt={`${creator.display_name || creator.username} - OnlyFans Creator Profile Picture`}
                   loading="eager"
+                  decoding="async"
                   className="w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full object-cover border-4 border-background shadow-lg"
+                  style={{ imageRendering: 'auto' }}
                   onError={(e) => e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop'}
                 />
                 {/* VERIFIED badge - Hidden until backoffice is ready

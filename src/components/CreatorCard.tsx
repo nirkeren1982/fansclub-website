@@ -63,7 +63,9 @@ const CreatorCard = memo(({ creator }: CreatorCardProps) => {
             src={imageUrl} 
             alt={`${displayName} - OnlyFans Creator Profile Picture`}
             loading="lazy"
+            decoding="async"
             className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+            style={{ imageRendering: 'auto' }}
             onError={(e) => handleImageError(e, creator.username)}
           />
           {/* PROMOTED badge - Hidden until backoffice is ready

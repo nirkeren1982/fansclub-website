@@ -97,4 +97,21 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+
+  /* High-quality image rendering for creator images */
+  img {
+    image-rendering: auto;
+    -ms-interpolation-mode: bicubic;
+  }
+
+  /* Ensure creator profile images maintain quality and prevent blur */
+  img[alt*="Creator Profile Picture"],
+  img[alt*="OnlyFans Creator"] {
+    image-rendering: auto;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }

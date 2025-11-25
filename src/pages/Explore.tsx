@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Header from "@/components/Header";
 import CreatorCard from "@/components/CreatorCard";
 import Footer from "@/components/Footer";
@@ -11,9 +12,27 @@ import { ItemListSchema } from "@/components/SEO/StructuredData";
 import { generateTitle } from "@/utils/seo";
 
 const Explore = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState<'popular' | 'newest' | 'price_low' | 'price_high'>('popular');
+  const [searchParams, setSearchParams] = useSearchParams();
   const creatorsPerPage = 28; // 7 rows × 4 columns
+  
+  // Get page and sort from URL params, with defaults and validation
+  const pageFromUrl = parseInt(searchParams.get('page') || '1', 10);
+  const currentPage = pageFromUrl > 0 ? pageFromUrl : 1; // Ensure page is at least 1
+  const sortBy = (searchParams.get('sort') || 'popular') as 'popular' | 'newest' | 'price_low' | 'price_high';
+  
+  // Update URL params when page or sort changes
+  const setCurrentPage = (page: number) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('page', page.toString());
+    setSearchParams(newParams, { replace: true });
+  };
+  
+  const updateSortBy = (sort: 'popular' | 'newest' | 'price_low' | 'price_high') => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('sort', sort);
+    newParams.set('page', '1'); // Reset to page 1 when sort changes
+    setSearchParams(newParams, { replace: true });
+  };
   
   const { creators, total, loading, error } = useCreators({
     limit: creatorsPerPage,
@@ -82,14 +101,22 @@ const Explore = () => {
     }
   })();
 
-  // Reset when sort changes
+  // Handle sort change
   const handleSortChange = (value: string) => {
-    setSortBy(value as 'popular' | 'newest' | 'price_low' | 'price_high');
-    setCurrentPage(1);
+    updateSortBy(value as 'popular' | 'newest' | 'price_low' | 'price_high');
   };
 
   // Calculate pagination info
   const totalPages = Math.ceil(total / creatorsPerPage);
+  
+  // Ensure currentPage doesn't exceed totalPages (fix edge cases)
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set('page', '1');
+      setSearchParams(newParams, { replace: true });
+    }
+  }, [totalPages, currentPage, searchParams, setSearchParams]);
   const startIndex = (currentPage - 1) * creatorsPerPage + 1;
   const endIndex = Math.min(currentPage * creatorsPerPage, total);
 

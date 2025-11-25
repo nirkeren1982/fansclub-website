@@ -170,3 +170,26 @@ export async function fetchCategories(): Promise<string[]> {
     return []
   }
 }
+
+/**
+ * Delete a creator by username
+ * Note: This requires appropriate database permissions
+ */
+export async function deleteCreatorByUsername(username: string): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('creators')
+      .delete()
+      .eq('username', username)
+
+    if (error) {
+      console.error('Failed to delete creator:', error)
+      throw error
+    }
+
+    return true
+  } catch (error) {
+    console.error('Failed to delete creator:', error)
+    throw error
+  }
+}

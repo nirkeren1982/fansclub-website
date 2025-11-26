@@ -20,6 +20,32 @@ function getSupabaseClient() {
   })
 }
 
+async function getGeoFromRequest(request: Request): Promise<{ country?: string; city?: string }> {
+  try {
+    const forwardedFor = request.headers.get('x-forwarded-for') || ''
+    const ip = forwardedFor.split(',')[0].trim()
+
+    if (!ip) {
+      return {}
+    }
+
+    const res = await fetch(`https://ipwho.is/${ip}`, { next: { revalidate: 60 } })
+    if (!res.ok) return {}
+
+    const data = (await res.json()) as any
+    if (data && data.success) {
+      return {
+        country: data.country || undefined,
+        city: data.city || undefined,
+      }
+    }
+
+    return {}
+  } catch {
+    return {}
+  }
+}
+
 type RecommendationClickBody = {
   anonUserId: string
   sessionId?: string
@@ -56,10 +82,14 @@ export async function POST(request: Request) {
       clickedCreatorUsername,
       position,
       section,
-      country,
-      city,
+      country: countryFromBody,
+      city: cityFromBody,
       userAgent,
     } = body
+
+    const geo = await getGeoFromRequest(request)
+    const country = countryFromBody || geo.country
+    const city = cityFromBody || geo.city
 
     // Upsert anonymous user profile
     await supabase

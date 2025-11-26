@@ -20,6 +20,35 @@ function getSupabaseClient() {
   })
 }
 
+async function getGeoFromRequest(request: Request): Promise<{ country?: string; city?: string }> {
+  try {
+    // Try to get real client IP from headers
+    const forwardedFor = request.headers.get('x-forwarded-for') || ''
+    const ip = forwardedFor.split(',')[0].trim()
+
+    if (!ip) {
+      return {}
+    }
+
+    // Use a free geo-IP service (no API key) to resolve IP → country/city
+    const res = await fetch(`https://ipwho.is/${ip}`, { next: { revalidate: 60 } })
+    if (!res.ok) return {}
+
+    const data = (await res.json()) as any
+    if (data && data.success) {
+      return {
+        country: data.country || undefined,
+        city: data.city || undefined,
+      }
+    }
+
+    return {}
+  } catch {
+    // Fail silently if geo lookup fails
+    return {}
+  }
+}
+
 type SearchEventBody = {
   anonUserId: string
   sessionId?: string
@@ -60,10 +89,15 @@ export async function POST(request: Request) {
       clickedCreatorUsername,
       clickedPosition,
       source,
-      country,
-      city,
+      country: countryFromBody,
+      city: cityFromBody,
       userAgent,
     } = body
+
+    // If country/city not provided by client, try to infer from IP
+    const geo = await getGeoFromRequest(request)
+    const country = countryFromBody || geo.country
+    const city = cityFromBody || geo.city
 
     // Upsert anonymous user profile
     await supabase

@@ -6,6 +6,7 @@ export interface Creator {
   display_name?: string | null
   full_name?: string | null
   profile_image_url?: string | null
+  profile_image_url_hq?: string | null
   bio?: string | null
   subscription_price?: number | null
   onlyfans_url?: string | null

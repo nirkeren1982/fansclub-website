@@ -15,6 +15,7 @@ import { CreatorContentSection } from "@/components/creator/CreatorContentSectio
 import { generatePageTitle, generateMetaDescription } from "@/utils/contentTemplates";
 import { ActivityTagsSection } from "@/components/creator/ActivityTagsSection";
 import { extractActivitiesFromBio } from "@/utils/activityExtractor";
+import { getCreatorImageUrl, getDefaultImageUrl } from "@/utils/imageUtils";
 
 const CreatorProfile = () => {
   const { username } = useParams();
@@ -104,7 +105,7 @@ const CreatorProfile = () => {
         title={pageTitle}
         description={pageDescription}
         canonical={`/creator/${creator.username}`}
-        ogImage={creator.profile_image_url || '/og-default.jpg'}
+        ogImage={getCreatorImageUrl(creator.username) || '/og-default.jpg'}
         keywords={`${creator.username}, ${creator.display_name || creator.username}, OnlyFans, ${creator.categories?.join(', ') || ''}`}
         type="profile"
       />
@@ -125,13 +126,13 @@ const CreatorProfile = () => {
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative">
                 <img
-                  src={creator.profile_image_url || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop'}
+                  src={getCreatorImageUrl(creator.username)}
                   alt={`${creator.display_name || creator.username} - OnlyFans Creator Profile Picture`}
                   loading="eager"
                   decoding="async"
                   className="w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full object-cover border-4 border-background shadow-lg"
                   style={{ imageRendering: 'auto' }}
-                  onError={(e) => e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop'}
+                  onError={(e) => e.currentTarget.src = getDefaultImageUrl()}
                 />
                 {/* VERIFIED badge - Hidden until backoffice is ready
                 {creator.is_verified && (

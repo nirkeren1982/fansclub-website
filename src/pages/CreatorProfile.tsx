@@ -132,7 +132,15 @@ const CreatorProfile = () => {
                   decoding="async"
                   className="w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full object-cover border-4 border-background shadow-lg"
                   style={{ imageRendering: 'auto' }}
-                  onError={(e) => e.currentTarget.src = getDefaultImageUrl()}
+                  onError={(e) => {
+                    // Try original URL first, then placeholder
+                    const currentSrc = e.currentTarget.src;
+                    if (currentSrc.includes('/api/creator-image/') && creator.profile_image_url) {
+                      e.currentTarget.src = creator.profile_image_url;
+                    } else {
+                      e.currentTarget.src = getDefaultImageUrl();
+                    }
+                  }}
                 />
                 {/* VERIFIED badge - Hidden until backoffice is ready
                 {creator.is_verified && (

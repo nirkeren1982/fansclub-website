@@ -23,12 +23,28 @@ function getSupabaseClient() {
 
 export async function GET(
   request: Request,
-  { params }: { params: { username: string } }
+  context?: { params?: { username?: string } | Promise<{ username?: string }> }
 ) {
   try {
-    const { username } = params
+    // Extract username from URL path
+    const url = new URL(request.url)
+    const pathParts = url.pathname.split('/')
+    const usernameIndex = pathParts.indexOf('creator-image') + 1
+    let username = pathParts[usernameIndex]
+
+    // Try to get from params if available (for Next.js compatibility)
+    if (!username && context?.params) {
+      const params = await Promise.resolve(context.params)
+      username = params?.username
+    }
+
+    // Decode username if it's URL encoded
+    if (username) {
+      username = decodeURIComponent(username)
+    }
 
     if (!username || typeof username !== 'string') {
+      console.error('Image proxy: No username found in URL:', url.pathname)
       return NextResponse.json(
         { error: 'Username required' },
         { status: 400, headers: CORS_HEADERS }
@@ -51,21 +67,23 @@ export async function GET(
       .eq('username', username)
       .single()
 
-    if (error || !data) {
-      return NextResponse.json(
-        { error: 'Creator not found' },
-        { status: 404, headers: CORS_HEADERS }
-      )
+    if (error) {
+      console.error('Image proxy: Database error for username', username, error)
+      // Return a redirect to placeholder instead of JSON error
+      return NextResponse.redirect(new URL('/og-default.jpg', request.url), { status: 302 })
+    }
+
+    if (!data) {
+      console.error('Image proxy: No creator data found for username:', username)
+      return NextResponse.redirect(new URL('/og-default.jpg', request.url), { status: 302 })
     }
 
     // Prefer HQ, fallback to LQ
     const imageUrl = data.profile_image_url_hq || data.profile_image_url
 
     if (!imageUrl) {
-      return NextResponse.json(
-        { error: 'No image available' },
-        { status: 404, headers: CORS_HEADERS }
-      )
+      console.warn('Image proxy: No image URL found for username:', username)
+      return NextResponse.redirect(new URL('/og-default.jpg', request.url), { status: 302 })
     }
 
     // Fetch the image from external source
@@ -78,10 +96,9 @@ export async function GET(
     })
 
     if (!imageResponse.ok) {
-      return NextResponse.json(
-        { error: 'Image not found' },
-        { status: 404, headers: CORS_HEADERS }
-      )
+      console.error('Image proxy: Failed to fetch image from URL:', imageUrl, 'Status:', imageResponse.status)
+      // Redirect to placeholder instead of returning JSON error
+      return NextResponse.redirect(new URL('/og-default.jpg', request.url), { status: 302 })
     }
 
     const imageBuffer = await imageResponse.arrayBuffer()

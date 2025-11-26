@@ -96,7 +96,7 @@ const CreatorCard = memo(({ creator, trackingContext }: CreatorCardProps) => {
             decoding="async"
             className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
             style={{ imageRendering: 'auto' }}
-            onError={(e) => handleImageError(e, creator.username)}
+            onError={(e) => handleImageError(e, creator.username, creator.profile_image_url)}
           />
           {/* PROMOTED badge - Hidden until backoffice is ready
           {creator.promoted && (

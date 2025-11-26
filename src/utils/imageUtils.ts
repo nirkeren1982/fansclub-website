@@ -35,16 +35,25 @@ export function getCreatorImageWithFallback(
 }
 
 /**
- * Handle image load error - fallback to placeholder
+ * Handle image load error - try fallback options
  * This is used in the onError handler of img tags
- * Since we're using the API proxy, we just fallback to placeholder
+ * First tries original profile_image_url, then placeholder
  */
 export function handleImageError(
   event: React.SyntheticEvent<HTMLImageElement>,
-  username: string | null | undefined
+  username: string | null | undefined,
+  fallbackUrl?: string | null
 ): void {
   const img = event.currentTarget;
-  // Fallback to placeholder image
+  const currentSrc = img.src;
+  
+  // If we were trying the proxy URL and it failed, try the original URL
+  if (currentSrc.includes('/api/creator-image/') && fallbackUrl) {
+    img.src = fallbackUrl;
+    return;
+  }
+  
+  // If original URL also failed, use placeholder
   img.src = getDefaultImageUrl();
 }
 

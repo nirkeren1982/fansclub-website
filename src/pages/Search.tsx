@@ -9,6 +9,7 @@ import { fetchCreators, type Creator } from '../lib/api';
 import { MetaTags } from "@/components/SEO/MetaTags";
 import { ItemListSchema } from "@/components/SEO/StructuredData";
 import { generateTitle } from "@/utils/seo";
+import { trackSearchEvent } from "@/utils/tracking";
 
 const Search = () => {
   const [searchParams] = useSearchParams();
@@ -48,6 +49,15 @@ const Search = () => {
         const sorted = sortCreators(creators, sortBy);
         setDisplayedCreators(sorted);
         setHasMore(creators.length === limit);
+
+        // Track search event (without click yet)
+        if (searchQuery) {
+          trackSearchEvent({
+            query: searchQuery,
+            resultCount: creators.length,
+            source: 'search_page',
+          });
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load creators');
       } finally {
@@ -219,10 +229,15 @@ const Search = () => {
                 <>
                   {/* Creators Grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                    {displayedCreators.map((creator) => (
+                    {displayedCreators.map((creator, index) => (
                       <CreatorCard
                         key={creator.id || creator.username}
                         creator={creator}
+                        trackingContext={{
+                          type: 'search',
+                          searchQuery,
+                          position: index + 1,
+                        }}
                       />
                     ))}
                   </div>

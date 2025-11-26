@@ -3,15 +3,23 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Heart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Creator } from "@/lib/api";
 import { getCreatorImageUrl, handleImageError } from "@/utils/imageUtils";
+import { trackSearchEvent, trackRecommendationClick } from "@/utils/tracking";
 
 interface CreatorCardProps {
   creator: Creator;
+  // Optional context for tracking
+  trackingContext?: {
+    type: 'search' | 'explore' | 'similar';
+    searchQuery?: string;
+    position?: number;
+    sourceCreatorUsername?: string;
+  };
 }
 
-const CreatorCard = memo(({ creator }: CreatorCardProps) => {
+const CreatorCard = memo(({ creator, trackingContext }: CreatorCardProps) => {
   // Format likes count with commas
   const formatLikes = (likes: number | null) => {
     if (likes === null || likes === undefined) return "0";
@@ -54,6 +62,28 @@ const CreatorCard = memo(({ creator }: CreatorCardProps) => {
 
   // Format price for display
   const priceDisplay = formatPrice(creator.subscription_price);
+
+  const handleClick = () => {
+    // Track search result click
+    if (trackingContext?.type === 'search' && trackingContext.searchQuery) {
+      trackSearchEvent({
+        query: trackingContext.searchQuery,
+        clickedCreatorUsername: creator.username,
+        clickedPosition: trackingContext.position,
+        source: 'search_page',
+      });
+    }
+
+    // Track similar / recommendation click
+    if (trackingContext?.type === 'similar' && trackingContext.sourceCreatorUsername) {
+      trackRecommendationClick({
+        sourceCreatorUsername: trackingContext.sourceCreatorUsername,
+        clickedCreatorUsername: creator.username,
+        position: trackingContext.position,
+        section: 'similar_creators',
+      });
+    }
+  };
 
   return (
     <Link to={`/creator/${creator.username}`} className="block">

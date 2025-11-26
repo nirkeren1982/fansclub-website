@@ -283,10 +283,15 @@ const CreatorProfile = () => {
             <h2 className="text-2xl md:text-3xl font-black mb-8 text-center">Similar Creators</h2>
             {randomCreators.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                {randomCreators.map((randomCreator) => (
+                {randomCreators.map((randomCreator, index) => (
                   <CreatorCard
                     key={randomCreator.id || randomCreator.username}
                     creator={randomCreator}
+                    trackingContext={{
+                      type: 'similar',
+                      sourceCreatorUsername: creator.username,
+                      position: index + 1,
+                    }}
                   />
                 ))}
               </div>

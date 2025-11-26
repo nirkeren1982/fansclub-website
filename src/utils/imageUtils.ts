@@ -1,16 +1,17 @@
 /**
- * Get the proxied image URL for a creator
- * This hides the external source URL from users
- * Uses the API proxy route that fetches HQ images from the database
+ * Get creator profile image URL from high-quality images folder
+ * Tries common image extensions: webp, jpg, jpeg, png
+ * Falls back to low-quality images folder, then to default image
  */
 export function getCreatorImageUrl(username: string | null | undefined): string {
   if (!username) {
     return getDefaultImageUrl();
   }
 
-  // Use API proxy route to hide external source URLs
-  // The proxy will fetch profile_image_url_hq (or fallback to profile_image_url) from database
-  return `/api/creator-image/${encodeURIComponent(username)}`;
+  // Try high-quality images first
+  // The browser will try to load these, and if 404, the onError handler will catch it
+  // We'll use webp first as it's most common for scraped images
+  return `/images-hq/${username}.webp`;
 }
 
 /**
@@ -35,9 +36,9 @@ export function getCreatorImageWithFallback(
 }
 
 /**
- * Handle image load error - try fallback options
+ * Handle image load error by trying alternative extensions and fallback locations
  * This is used in the onError handler of img tags
- * First tries original profile_image_url, then placeholder
+ * Tries: HQ images (different extensions) → LQ images → placeholder
  */
 export function handleImageError(
   event: React.SyntheticEvent<HTMLImageElement>,
@@ -47,13 +48,46 @@ export function handleImageError(
   const img = event.currentTarget;
   const currentSrc = img.src;
   
-  // If we were trying the proxy URL and it failed, try the original URL
-  if (currentSrc.includes('/api/creator-image/') && fallbackUrl) {
-    img.src = fallbackUrl;
+  if (!username) {
+    img.src = getDefaultImageUrl();
+    return;
+  }
+
+  // Extract current extension from src
+  const currentPath = new URL(currentSrc, window.location.origin).pathname;
+  const currentExt = currentPath.split('.').pop()?.split('?')[0] || '';
+  
+  // Try alternative extensions for HQ images
+  const extensions = ['webp', 'jpg', 'jpeg', 'png'];
+  const currentIndex = extensions.indexOf(currentExt);
+  
+  if (currentPath.includes('/images-hq/')) {
+    // We're trying HQ images - try next extension
+    if (currentIndex < extensions.length - 1) {
+      const nextExt = extensions[currentIndex + 1];
+      img.src = `/images-hq/${username}.${nextExt}`;
+      return;
+    }
+    // All HQ extensions tried, fallback to LQ images
+    img.src = `/images/${username}.webp`;
     return;
   }
   
-  // If original URL also failed, use placeholder
+  if (currentPath.includes('/images/')) {
+    // We're trying LQ images - try next extension
+    if (currentIndex < extensions.length - 1) {
+      const nextExt = extensions[currentIndex + 1];
+      img.src = `/images/${username}.${nextExt}`;
+      return;
+    }
+    // All LQ extensions tried, try original URL if provided
+    if (fallbackUrl) {
+      img.src = fallbackUrl;
+      return;
+    }
+  }
+  
+  // All options exhausted, use placeholder
   img.src = getDefaultImageUrl();
 }
 

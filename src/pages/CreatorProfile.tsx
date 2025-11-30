@@ -179,7 +179,7 @@ const CreatorProfile = () => {
             <div className="space-y-6">
               <div className="border-b pb-6">
                 <h2 className="text-2xl font-bold mb-4 text-center">About</h2>
-                <p className="text-bio-mobile md:text-bio-desktop text-[hsl(0_0%_45%)] leading-relaxed">
+                <p className="text-bio-mobile md:text-bio-desktop text-[hsl(0_0%_45%)] leading-relaxed text-center">
                   {creator.bio || "No bio available"}
                 </p>
               </div>
